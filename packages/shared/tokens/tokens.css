@@ -1,0 +1,17 @@
+:root {
+  --color-bg: #F7F5F0;
+  --color-surface: #FFFFFF;
+  --color-border: #E7E4DC;
+  --color-ink: #20212B;
+  --color-ink-muted: #767685;
+  --color-primary: #FF5C4D;
+  --color-primary-hover: #E8492C;
+  --color-secondary: #2F2F4A;
+  --color-accent-yellow: #FFC53D;
+  --color-accent-teal: #2BBBA0;
+  --color-accent-blue: #4D8DFF;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --font-heading: 'Sora', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}

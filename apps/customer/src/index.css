@@ -1,0 +1,99 @@
+@import "../../../packages/shared/tokens/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-body antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-ink tracking-tight font-bold;
+  }
+}
+
+@layer utilities {
+  /* 1. Page transition fade-in */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* 3. Bright Workshop card */
+  .card-workshop {
+    @apply bg-surface border border-border rounded-lg;
+    box-shadow: 0 1px 3px rgba(32, 33, 43, 0.06), 0 1px 2px rgba(32, 33, 43, 0.04);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s ease;
+  }
+
+  .card-workshop:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(32, 33, 43, 0.08), 0 4px 8px rgba(32, 33, 43, 0.04);
+    border-color: var(--color-primary);
+  }
+
+  /* 4. Primary button */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center transition duration-150 select-none;
+    @apply bg-primary text-white font-heading font-semibold rounded-md;
+    box-shadow: 0 1px 3px rgba(255, 92, 77, 0.3);
+  }
+
+  .btn-primary:hover {
+    @apply bg-primary-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 92, 77, 0.25);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(255, 92, 77, 0.2);
+  }
+
+  /* 5. Styled inputs with primary focus ring */
+  .input-workshop {
+    @apply w-full px-3 py-2 bg-surface border border-border rounded-md font-body text-sm text-ink transition duration-150;
+  }
+
+  .input-workshop:focus {
+    @apply outline-none border-primary;
+    box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-primary);
+  }
+
+  /* 6. Motion accessibility safety checks */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-in {
+      animation: none !important;
+    }
+    .card-workshop,
+    .card-workshop:hover,
+    .btn-primary,
+    .btn-primary:hover,
+    .btn-primary:active {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .hover\:scale-105:hover,
+    .group:hover .group-hover\:scale-105,
+    .group:hover .group-hover\:scale-110 {
+      transform: none !important;
+    }
+    .transition-transform,
+    .transition-all,
+    .transition {
+      transition: none !important;
+    }
+  }
+}
