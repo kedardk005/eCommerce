@@ -49,6 +49,7 @@ import cmsRouter from './routes/cms.routes'
 import financeRouter from './routes/finance.routes'
 import accountsRouter, { setPasswordHandler } from './routes/account.routes'
 import activityLogRouter from './routes/activityLog.routes'
+import profileRouter from './routes/profile.routes'
 import { globalApiLimiter, adminApiLimiter } from './middleware/auth.middleware'
 
 const app = express()
@@ -104,20 +105,9 @@ app.use('/api', cmsRouter)
 app.use('/api/admin/finance', financeRouter)
 app.use('/api/admin/accounts', accountsRouter)
 app.use('/api/admin/activity-logs', activityLogRouter)
+app.use('/api', profileRouter)
 app.post('/api/auth/set-password', setPasswordHandler)
 
-// Example route demonstrating activity logging middleware (Phase 4+ target)
-import { requireAuth, requireRole } from './middleware/auth.middleware'
-import { logAction } from './middleware/activityLog.middleware'
-
-app.post('/api/admin/test-log', requireAuth, requireRole('super_owner'), logAction((req, resBody) => ({
-  action: 'TEST_ADMIN_ACTION',
-  entityType: 'System',
-  entityId: 'test-101',
-  metadata: { ip: req.ip, success: resBody.success }
-}))((req, res) => {
-  res.json({ success: true, message: 'Admin action logged successfully.' })
-}))
 
 app.get('/api/health', (req, res) => {
   res.json({

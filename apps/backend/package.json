@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev:backend": "npm run dev",
     "build": "tsc",
     "test": "ts-node --transpile-only tests/run.ts"
   },

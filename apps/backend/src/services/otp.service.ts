@@ -1,11 +1,12 @@
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 export class OtpService {
   /**
-   * Generate a cryptographically random-ish 6-digit numerical string
+   * Generate a cryptographically secure 6-digit numerical string
    */
   public static generateOtp(): string {
-    const value = Math.floor(100000 + Math.random() * 900000)
+    const value = crypto.randomInt(100000, 999999)
     return value.toString()
   }
 

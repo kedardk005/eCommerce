@@ -1290,8 +1290,8 @@ router.post('/payments/webhook', async (req, res) => {
     shasum.update(typeof req.body === 'string' ? req.body : JSON.stringify(req.body))
     const digest = shasum.digest('hex')
 
-    if (digest !== signature && signature !== 'bypass-signature-validation-for-test') {
-      console.log(`[RazorpayWebhook] Signature verification failed. Expected: ${signature}, got: ${digest}`)
+    if (digest !== signature) {
+      console.warn(`[RazorpayWebhook] Signature verification failed. Expected digest: ${digest}`)
       return res.status(400).json({ error: 'Signature verification failed' })
     }
 

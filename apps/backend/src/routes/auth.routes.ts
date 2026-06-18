@@ -373,8 +373,11 @@ router.post('/forgot-password', rateLimit({
 
     const user = await findUserByEmailOrPhone(data.emailOrPhone)
     if (!user) {
-      // Still return 200 for email enumeration safety or return 404 based on design. Let's return 404 to let frontend manage errors easily.
-      return res.status(404).json({ error: 'Account not found' })
+      // Return generic success to prevent email enumeration attacks
+      return res.json({
+        status: 'success',
+        message: 'If an account with that email/phone exists, a password reset OTP has been sent.'
+      })
     }
 
     // Generate Reset OTP
@@ -393,12 +396,12 @@ router.post('/forgot-password', rateLimit({
     // Send email
     const emailSent = await BrevoService.sendOtpEmail(user.email, otp)
     if (!emailSent) {
-      return res.status(500).json({ error: 'Failed to send OTP verification email.' })
+      console.error('[ForgotPassword] Failed to send OTP email to:', user.email)
     }
 
     return res.json({
       status: 'success',
-      message: 'Password reset OTP sent successfully.'
+      message: 'If an account with that email/phone exists, a password reset OTP has been sent.'
     })
   } catch (error) {
     if (error instanceof z.ZodError) {
