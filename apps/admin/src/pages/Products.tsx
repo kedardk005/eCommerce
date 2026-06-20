@@ -34,6 +34,7 @@ export const Products: React.FC = () => {
   const [status, setStatus] = useState<AdminProduct['status']>('Active')
   const [variants, setVariants] = useState<AdminVariant[]>([{ name: 'Standard Pack', stock: 10 }])
   const [imageColor, setImageColor] = useState('bg-primary')
+  const [images, setImages] = useState<{ id?: string; r2Key?: string; url: string; position?: number }[]>([])
 
   // Category inline states
   const [newCatName, setNewCatName] = useState('')
@@ -61,6 +62,7 @@ export const Products: React.FC = () => {
     setStatus('Active')
     setVariants([{ name: 'Standard Pack', stock: 10 }])
     setImageColor('bg-primary')
+    setImages([])
     setIsModalOpen(true)
   }
 
@@ -78,6 +80,7 @@ export const Products: React.FC = () => {
     setStatus(p.status)
     setVariants(p.variants.length > 0 ? p.variants : [{ name: 'Standard Pack', stock: 10 }])
     setImageColor(p.imageColor)
+    setImages(p.images || [])
     setIsModalOpen(true)
   }
 
@@ -99,7 +102,8 @@ export const Products: React.FC = () => {
       discountPrice: parsedDiscount,
       status,
       variants,
-      imageColor
+      imageColor,
+      images
     }
 
     try {
@@ -171,15 +175,7 @@ export const Products: React.FC = () => {
     return products.filter(p => p.category === catName).length
   }
 
-  // Color options for toy thumbnail simulation
-  const colorOptions = [
-    { label: 'Navy', value: 'bg-secondary' },
-    { label: 'Coral', value: 'bg-primary' },
-    { label: 'Warm Sand', value: 'bg-bg' },
-    { label: 'Teal', value: 'bg-accent-teal' },
-    { label: 'Ocean Blue', value: 'bg-accent-blue' },
-    { label: 'Sunny Yellow', value: 'bg-accent-yellow' },
-  ]
+
 
   return (
     <div className="space-y-4">
@@ -246,8 +242,12 @@ export const Products: React.FC = () => {
                     return (
                       <tr key={p.id} className="hover:bg-bg transition-colors">
                         <td className="px-4 py-2.5 flex items-center space-x-2">
-                          <div className={`h-8 w-8 rounded ${p.imageColor} border border-border/50 flex items-center justify-center text-white text-xs font-bold font-heading select-none shadow-sm`}>
-                            🧸
+                          <div className={`h-8 w-8 rounded ${p.images && p.images.length > 0 ? '' : p.imageColor} border border-border/50 flex items-center justify-center overflow-hidden text-white text-xs font-bold font-heading select-none shadow-sm`}>
+                            {p.images && p.images.length > 0 ? (
+                              <img src={p.images[0].url} alt={p.title} className="h-full w-full object-cover" />
+                            ) : (
+                              '🧸'
+                            )}
                           </div>
                           <div>
                             <div className="font-semibold text-ink">{p.title}</div>
@@ -256,9 +256,9 @@ export const Products: React.FC = () => {
                         </td>
                         <td className="px-4 py-2.5 text-ink-muted">{p.category}</td>
                         <td className="px-4 py-2.5 text-right">
-                          <div className="font-semibold text-ink">${p.discountPrice.toFixed(2)}</div>
+                          <div className="font-semibold text-ink">₹{p.discountPrice.toFixed(2)}</div>
                           {p.price > p.discountPrice && (
-                            <div className="text-[10px] text-ink-muted line-through">${p.price.toFixed(2)}</div>
+                            <div className="text-[10px] text-ink-muted line-through">₹{p.price.toFixed(2)}</div>
                           )}
                         </td>
                         <td className="px-4 py-2.5 text-right font-mono">
@@ -549,13 +549,13 @@ export const Products: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Price */}
                 <div className="space-y-1">
-                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Base Price ($)</label>
+                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Base Price (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    placeholder="39.99"
+                    placeholder="399.00"
                     className="w-full px-2.5 py-1.5 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary"
                     required
                   />
@@ -563,42 +563,96 @@ export const Products: React.FC = () => {
 
                 {/* Discount Price */}
                 <div className="space-y-1">
-                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Discount Price ($)</label>
+                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Discount Price (₹)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={discountPrice}
                     onChange={(e) => setDiscountPrice(e.target.value)}
-                    placeholder="34.99"
+                    placeholder="349.00"
                     className="w-full px-2.5 py-1.5 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
 
-              {/* Toy Visual Color Selector & Image Upload Stub */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-bg border border-border p-3 rounded">
-                <div className="space-y-1">
-                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Thumbnail Accent Color</label>
-                  <select
-                    value={imageColor}
-                    onChange={(e) => setImageColor(e.target.value)}
-                    className="w-full px-2 py-1 bg-surface border border-border rounded text-xs focus:outline-none"
+              {/* Images Section */}
+              <div className="bg-bg border border-border p-3 rounded space-y-2">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-[10px] font-semibold text-ink uppercase tracking-wider">Product Images Gallery</h4>
+                  <button
+                    type="button"
+                    onClick={() => setImages(prev => [...prev, { url: '', position: prev.length }])}
+                    className="text-[10px] font-bold text-ink-muted hover:underline focus:outline-none"
                   >
-                    {colorOptions.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
+                    ➕ Add Image URL
+                  </button>
                 </div>
 
-                {/* Image upload stub UI */}
-                <div className="space-y-1">
-                  <label className="block text-[10px] font-semibold text-ink-muted uppercase">Toy Images Upload</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={() => alert('Image uploading is simulated. Custom accent thumbnail color will be applied instead.')}
-                    className="text-[10px] text-ink-muted cursor-pointer mt-1"
-                  />
+                {/* Image Uploader and URLs */}
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2 bg-surface p-2 rounded border border-border">
+                    <div className="flex-1">
+                      <label className="block text-[9px] font-semibold text-ink-muted uppercase mb-1">Upload Image Files</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={async (e) => {
+                          if (e.target.files) {
+                            const filesArray = Array.from(e.target.files);
+                            const readPromises = filesArray.map(file => {
+                              return new Promise<string>((resolve) => {
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  resolve(event.target?.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                              });
+                            });
+                            const base64s = await Promise.all(readPromises);
+                            setImages(prev => [
+                              ...prev,
+                              ...base64s.map((b64, idx) => ({
+                                url: b64,
+                                r2Key: 'uploaded',
+                                position: prev.length + idx
+                              }))
+                            ]);
+                          }
+                        }}
+                        className="text-[10px] text-ink-muted cursor-pointer"
+                      />
+                    </div>
+                  </div>
+
+                  {images.map((img, idx) => (
+                    <div key={idx} className="flex items-center space-x-2 bg-surface p-1.5 rounded border border-border">
+                      {img.url ? (
+                        <img src={img.url} alt="preview" className="h-8 w-8 object-cover rounded border" />
+                      ) : (
+                        <div className="h-8 w-8 bg-bg flex items-center justify-center text-[10px] text-ink-muted border rounded">🖼️</div>
+                      )}
+                      <input
+                        type="text"
+                        value={img.url}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setImages(prev => prev.map((item, i) => i === idx ? { ...item, url: val } : item));
+                        }}
+                        placeholder="Enter image URL or upload file"
+                        className="flex-1 min-w-0 px-2 py-1 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImages(prev => prev.filter((_, i) => i !== idx))}
+                        className="text-primary hover:opacity-80 px-1 font-bold text-xs"
+                        title="Remove image"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
 

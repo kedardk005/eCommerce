@@ -69,10 +69,10 @@ export const Dashboard: React.FC = () => {
   const yAxisCeiling = Math.max(2000, Math.ceil(maxRevenue / 500) * 500)
 
   // Format currency
-  const formatUSD = (val: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatINR = (val: number) => {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 2
     }).format(val)
   }
@@ -133,7 +133,7 @@ export const Dashboard: React.FC = () => {
         <div className="bg-surface border border-border p-3.5 rounded shadow-sm text-left relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-accent-teal" />
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider">Revenue Today</p>
-          <p className="text-xl font-heading font-extrabold text-ink mt-1">{formatUSD(revenueToday)}</p>
+          <p className="text-xl font-heading font-extrabold text-ink mt-1">{formatINR(revenueToday)}</p>
           <span className="text-[9px] text-accent-teal font-semibold">📈 Real-time context</span>
         </div>
 
@@ -180,7 +180,7 @@ export const Dashboard: React.FC = () => {
                 {hoveredBar ? (
                   <div>
                     <span className="text-[10px] text-ink-muted font-medium">{hoveredBar.date}: </span>
-                    <span className="text-xs font-bold text-ink">{formatUSD(hoveredBar.revenue)}</span>
+                    <span className="text-xs font-bold text-ink">{formatINR(hoveredBar.revenue)}</span>
                     <span className="text-[9px] text-ink-muted"> ({hoveredBar.orders} orders)</span>
                   </div>
                 ) : (
@@ -218,7 +218,7 @@ export const Dashboard: React.FC = () => {
                         textAnchor="end"
                         className="font-mono font-bold"
                       >
-                        ${labelValue}
+                        ₹{labelValue}
                       </text>
                     </g>
                   )
@@ -262,7 +262,7 @@ export const Dashboard: React.FC = () => {
                         fontWeight="bold"
                         className="font-mono opacity-80"
                       >
-                        ${Math.round(d.revenue)}
+                        ₹{Math.round(d.revenue)}
                       </text>
 
                       {/* X-Axis Labels */}
@@ -324,7 +324,7 @@ export const Dashboard: React.FC = () => {
                           <div className="text-[9px] text-ink-muted">{totalItems} items</div>
                         </td>
                         <td className="px-4 py-2 text-ink-muted text-[10px]">{order.date}</td>
-                        <td className="px-4 py-2 text-right font-mono font-semibold">{formatUSD(order.total)}</td>
+                        <td className="px-4 py-2 text-right font-mono font-semibold">{formatINR(order.total)}</td>
                         <td className="px-4 py-2 text-center">
                           <span className={`inline-block text-[9px] font-heading font-bold px-2 py-0.5 rounded-full ${getStatusBadgeClass(order.status)}`}>
                             {order.status}

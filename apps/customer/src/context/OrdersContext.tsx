@@ -103,7 +103,8 @@ export const OrdersProvider: React.FC<{ children: ReactNode }> = ({ children }) 
             stock: varOpt.stock
           })) : [],
           reviews: [],
-          imageColor: 'bg-primary'
+          imageColor: 'bg-primary',
+          image: p.images?.[0]?.url
         }
 
         const mappedVariant: Variant = {

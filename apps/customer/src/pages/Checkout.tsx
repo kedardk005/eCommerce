@@ -56,8 +56,8 @@ export const Checkout: React.FC = () => {
 
   // Delivery calculations
   const deliveryFee = useMemo(() => {
-    if (subtotal >= 50) return 0
-    return 5.0
+    if (subtotal >= 500) return 0
+    return 50.0
   }, [subtotal])
 
   // Order Total
@@ -383,7 +383,7 @@ export const Checkout: React.FC = () => {
                   </span>
                 </div>
                 <span className="font-heading font-bold text-ink shrink-0">
-                  ${(item.product.discountPrice * item.quantity).toFixed(2)}
+                  ₹{(item.product.discountPrice * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -393,18 +393,18 @@ export const Checkout: React.FC = () => {
           <div className="space-y-3 font-body text-sm text-ink border-b border-border/40 pb-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-semibold">${subtotal.toFixed(2)}</span>
+              <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-accent-teal font-semibold">
                 <span>Discount ({activeCoupon})</span>
-                <span>-${discount.toFixed(2)}</span>
+                <span>-₹{discount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between">
               <span>Delivery Fee</span>
               <span className="font-semibold">
-                {deliveryFee === 0 ? <span className="text-accent-teal font-bold">Free</span> : `$${deliveryFee.toFixed(2)}`}
+                {deliveryFee === 0 ? <span className="text-accent-teal font-bold">Free</span> : `₹${deliveryFee.toFixed(2)}`}
               </span>
             </div>
           </div>
@@ -413,7 +413,7 @@ export const Checkout: React.FC = () => {
           <div className="flex justify-between items-baseline pt-2">
             <span className="font-heading text-lg text-ink font-bold">Total Amount</span>
             <span className="font-heading text-2xl text-primary font-bold">
-              ${total.toFixed(2)}
+              ₹{total.toFixed(2)}
             </span>
           </div>
 
@@ -423,7 +423,7 @@ export const Checkout: React.FC = () => {
             disabled={cartItems.length === 0 || isPlacing}
             className="w-full btn-primary bg-accent-yellow hover:bg-accent-yellow/95 disabled:bg-border disabled:text-ink-muted text-ink font-heading font-bold py-3.5 px-6 rounded-md shadow-xs"
           >
-            {isPlacing ? 'Placing Order...' : `Place Order ($${total.toFixed(2)})`}
+            {isPlacing ? 'Placing Order...' : `Place Order (₹${total.toFixed(2)})`}
           </button>
         </div>
       </div>

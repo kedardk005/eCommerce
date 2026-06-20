@@ -109,19 +109,29 @@ router.get('/products', async (req, res) => {
     }
 
     if (category) {
+      const catStr = category as string
       where.category = {
         OR: [
-          { id: category as string },
-          { slug: category as string }
+          { id: catStr },
+          { slug: catStr },
+          { slug: catStr.toLowerCase() },
+          { slug: catStr.toLowerCase().replace(/\s+/g, '-') },
+          { name: catStr },
+          { name: { equals: catStr, mode: 'insensitive' } }
         ]
       }
     }
 
     if (brand) {
+      const brandStr = brand as string
       where.brand = {
         OR: [
-          { id: brand as string },
-          { slug: brand as string }
+          { id: brandStr },
+          { slug: brandStr },
+          { slug: brandStr.toLowerCase() },
+          { slug: brandStr.toLowerCase().replace(/\s+/g, '-') },
+          { name: brandStr },
+          { name: { equals: brandStr, mode: 'insensitive' } }
         ]
       }
     }

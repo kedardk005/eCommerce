@@ -1,13 +1,393 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import PageContainer from '../components/PageContainer'
-import BadgeTag from '../components/BadgeTag'
 
+// ─────────────────────────────────────────────────────────────────
+// HERO SECTION — asymmetric 2-column editorial layout
+// ─────────────────────────────────────────────────────────────────
+const HeroSection: React.FC = () => {
+  const heroImages = [
+    {
+      src: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&h=900&fit=crop',
+      alt: 'Handcrafted wooden toys',
+    },
+    {
+      src: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=600&h=400&fit=crop',
+      alt: 'Toy store collection',
+    },
+    {
+      src: 'https://images.unsplash.com/photo-1595037969702-b464bcd0df10?w=600&h=400&fit=crop',
+      alt: 'Kids playing with toys',
+    },
+    {
+      src: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&h=900&fit=crop',
+      alt: 'Building blocks',
+    },
+  ]
+
+  return (
+    <section className="w-full bg-white" aria-label="Hero">
+      <div className="section-inner py-16 md:py-20 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[75vh]">
+
+          {/* LEFT — text column */}
+          <div className="flex flex-col justify-center space-y-8 order-1 lg:order-1">
+            {/* Eyebrow */}
+            <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted">
+              Handcrafted &middot; Safe &middot; Timeless
+            </span>
+
+            {/* Headline */}
+            <h1
+              className="font-heading font-bold text-ink leading-[1.05]"
+              style={{ fontSize: 'clamp(2.5rem, 6vw, 5.5rem)' }}
+            >
+              Wooden toys
+              <br />
+              <span className="text-secondary">for big</span>
+              <br />
+              imaginations.
+            </h1>
+
+            {/* Sub-copy */}
+            <p
+              className="font-body text-ink-muted leading-relaxed"
+              style={{ maxWidth: '32ch', fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)' }}
+            >
+              Sustainably sourced, chemical-free and built to outlast childhood — every toy a story waiting to be written.
+            </p>
+
+            {/* CTA */}
+            <div>
+              <Link
+                to="/products"
+                id="hero-shop-now-btn"
+                className="btn-pill-dark"
+              >
+                Shop Now
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Trust indicators */}
+            <div className="flex flex-wrap gap-6 pt-2">
+              {[
+                { label: '500+', sub: 'Unique toys' },
+                { label: '4.9★', sub: 'Average rating' },
+                { label: 'Free', sub: 'Shipping over ₹500' },
+              ].map((item) => (
+                <div key={item.label} className="space-y-0.5">
+                  <p className="font-heading font-bold text-ink text-lg">{item.label}</p>
+                  <p className="font-body text-ink-muted text-xs">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT — asymmetric image grid */}
+          <div className="order-2 lg:order-2" style={{ minHeight: '480px' }}>
+            <div className="grid h-full gap-3 sm:gap-4" style={{ gridTemplateColumns: '58% 42%', minHeight: '480px', maxHeight: '680px' }}>
+              {/* Left Column — 58% width */}
+              <div className="flex flex-col gap-3 sm:gap-4">
+                {/* Image 1: Tall */}
+                <div className="flex-[3.5] rounded-2xl overflow-hidden bg-border relative">
+                  <img
+                    src={heroImages[0].src}
+                    alt={heroImages[0].alt}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    style={{ backgroundColor: '#E7E4DC' }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement
+                      target.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.style.backgroundColor = '#E7E4DC'
+                      }
+                    }}
+                  />
+                </div>
+                {/* Image 2: Short */}
+                <div className="flex-[2] rounded-2xl overflow-hidden bg-border relative">
+                  <img
+                    src={heroImages[1].src}
+                    alt={heroImages[1].alt}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    style={{ backgroundColor: '#E7E4DC' }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement
+                      target.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.style.backgroundColor = '#E7E4DC'
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column — 42% width */}
+              <div className="flex flex-col gap-3 sm:gap-4">
+                {/* Image 3: Short */}
+                <div className="flex-[2] rounded-2xl overflow-hidden bg-border relative">
+                  <img
+                    src={heroImages[2].src}
+                    alt={heroImages[2].alt}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    style={{ backgroundColor: '#E7E4DC' }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement
+                      target.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.style.backgroundColor = '#E7E4DC'
+                      }
+                    }}
+                  />
+                </div>
+                {/* Image 4: Tall */}
+                <div className="flex-[3.5] rounded-2xl overflow-hidden bg-border relative">
+                  <img
+                    src={heroImages[3].src}
+                    alt={heroImages[3].alt}
+                    loading="lazy"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    style={{ backgroundColor: '#E7E4DC' }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement
+                      target.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.style.backgroundColor = '#E7E4DC'
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// CATEGORY STRIP
+// ─────────────────────────────────────────────────────────────────
+const categoryEmojis = ['🧸', '🚗', '🎨', '🧩', '📚', '🌲']
+const categoryImages = [
+  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop',
+  'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=80&h=80&fit=crop',
+  'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=80&h=80&fit=crop',
+  'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=80&h=80&fit=crop',
+  'https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=80&h=80&fit=crop',
+  'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=80&h=80&fit=crop',
+]
+
+interface CategoryStripProps {
+  categories: string[]
+}
+
+const CategoryStrip: React.FC<CategoryStripProps> = ({ categories }) => {
+  if (categories.length === 0) return null
+
+  return (
+    <section className="w-full bg-white border-y border-border" id="categories" aria-label="Product categories">
+      <div className="section-inner py-10">
+        <div className="flex flex-wrap items-center justify-center gap-0">
+          {categories.map((cat, idx) => (
+            <React.Fragment key={cat}>
+              <Link
+                to={`/products?category=${encodeURIComponent(cat)}`}
+                className="flex flex-col sm:flex-row items-center gap-3 px-6 sm:px-8 py-4 group hover:bg-bg/60 transition-colors duration-150 rounded-lg"
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-border flex items-center justify-center shrink-0">
+                  <img
+                    src={categoryImages[idx % categoryImages.length]}
+                    alt={cat}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement
+                      target.style.display = 'none'
+                      if (target.parentElement) {
+                        target.parentElement.textContent = categoryEmojis[idx % 6]
+                      }
+                    }}
+                  />
+                </div>
+                <span className="font-heading font-semibold text-sm text-ink group-hover:text-primary transition-colors tracking-wide">
+                  {cat}
+                </span>
+              </Link>
+              {idx < categories.length - 1 && (
+                <div className="cat-divider hidden sm:block" />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+
+// ─────────────────────────────────────────────────────────────────
+// CURATED WITH CARE — split section
+// ─────────────────────────────────────────────────────────────────
+const CuratedSection: React.FC = () => {
+  return (
+    <section className="w-full bg-white" aria-label="About our craft">
+      <div className="section-inner py-20 md:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+          {/* Image side */}
+          <div className="order-2 lg:order-1 rounded-2xl overflow-hidden bg-border" style={{ minHeight: '420px', maxHeight: '560px' }}>
+            <img
+              src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=900&h=700&fit=crop"
+              alt="Handcrafted wooden toys in our workshop"
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+              style={{ minHeight: '420px', backgroundColor: '#E7E4DC' }}
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement
+                target.style.display = 'none'
+                if (target.parentElement) {
+                  target.parentElement.style.backgroundColor = '#E7E4DC'
+                }
+              }}
+            />
+          </div>
+
+          {/* Text side */}
+          <div className="order-1 lg:order-2 space-y-6">
+            <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
+              Our Promise
+            </span>
+            <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', lineHeight: 1.15 }}>
+              Curated with care,<br />crafted with love.
+            </h2>
+            <p className="font-body text-ink-muted text-sm sm:text-base leading-relaxed">
+              Every toy in our collection is sourced from workshops that share our commitment to safety, sustainability, and developmental quality. We test each piece against rigorous child-safety standards before it ever reaches your hands.
+            </p>
+            <p className="font-body text-ink-muted text-sm sm:text-base leading-relaxed">
+              From the forests that give us our timber to the artisans who shape every curve — we believe great toys begin long before they reach the toy chest. That's why we trace every piece back to its roots.
+            </p>
+            <Link
+              to="/about"
+              id="curated-learn-more-link"
+              className="inline-flex items-center gap-2 font-heading font-semibold text-sm text-ink border-b border-ink/30 pb-0.5 hover:border-ink transition-colors duration-150 group"
+            >
+              Learn more about us
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-150 group-hover:translate-x-1">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </Link>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// EDITORIAL PRODUCT CARD
+// ─────────────────────────────────────────────────────────────────
+interface ProductCardProps {
+  product: {
+    id: string
+    title: string
+    slug: string
+    price: number
+    discountPrice: number
+    category: string
+    rating: number
+    stockStatus: string
+    image?: string
+  }
+}
+
+const EditorialProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  return (
+    <Link
+      to={`/products/${product.slug}`}
+      className="group flex flex-col bg-white rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full"
+      style={{ boxShadow: '0 1px 4px rgba(32,33,43,0.05)' }}
+    >
+      {/* Image area */}
+      <div
+        className="relative overflow-hidden bg-bg flex items-center justify-center w-full"
+        style={{ aspectRatio: '4/3' }}
+      >
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <span className="text-6xl filter drop-shadow transition-transform duration-500 group-hover:scale-110 select-none">🧸</span>
+        )}
+
+        {/* Minimal text tags — replace heavy pills */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+          {product.discountPrice < product.price && (
+            <span className="font-heading font-bold text-[10px] uppercase tracking-wider text-primary bg-white/90 px-2 py-0.5 rounded">
+              Sale
+            </span>
+          )}
+          {product.stockStatus === 'Out of Stock' && (
+            <span className="font-heading font-bold text-[10px] uppercase tracking-wider text-ink-muted bg-white/90 px-2 py-0.5 rounded">
+              Sold Out
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Info block */}
+      <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+        <div className="space-y-1">
+          <span className="font-heading font-semibold text-[10px] uppercase tracking-widest text-ink-muted block">
+            {product.category}
+          </span>
+          <h3 className="font-heading font-semibold text-ink text-base leading-snug line-clamp-1 group-hover:text-primary transition-colors duration-200">
+            {product.title}
+          </h3>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="font-heading font-bold text-ink text-base">
+              ₹{product.discountPrice.toFixed(2)}
+            </span>
+            {product.price > product.discountPrice && (
+              <span className="font-body text-ink-muted line-through text-xs">
+                ₹{product.price.toFixed(2)}
+              </span>
+            )}
+          </div>
+          <span className="flex items-center gap-1 text-xs font-heading font-semibold text-ink">
+            <span className="text-accent-yellow">★</span>
+            {product.rating.toFixed(1)}
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// HOME PAGE — main component
+// ─────────────────────────────────────────────────────────────────
 export const Home: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([])
-  const [banners, setBanners] = useState<any[]>([])
-  const [currentSlide, setCurrentSlide] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -15,10 +395,9 @@ export const Home: React.FC = () => {
     setLoading(true)
     setError(null)
     try {
-      const [catRes, prodRes, bannerRes] = await Promise.all([
+      const [catRes, prodRes] = await Promise.all([
         fetch('/api/categories'),
-        fetch('/api/products?limit=4&sort=rating'),
-        fetch('/api/banners')
+        fetch('/api/products?limit=4&sort=rating')
       ])
       if (catRes.ok) {
         const cats = await catRes.json()
@@ -45,14 +424,17 @@ export const Home: React.FC = () => {
               stock: v.stock
             })) : [],
             reviews: [],
-            imageColor: 'bg-primary'
+            imageColor: 'bg-primary',
+            image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+            images: p.images ? p.images.map((img: any) => ({
+              id: img.id,
+              r2Key: img.r2Key,
+              url: img.url,
+              position: img.position
+            })) : []
           }
         })
         setFeaturedProducts(formatted)
-      }
-      if (bannerRes.ok) {
-        const bannerData = await bannerRes.json()
-        setBanners(bannerData)
       }
     } catch (err) {
       console.error('Failed to load home page data:', err)
@@ -66,255 +448,114 @@ export const Home: React.FC = () => {
     fetchHomeData()
   }, [])
 
-  // Auto-advance banner slides
-  useEffect(() => {
-    if (banners.length <= 1) return
-    const timer = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % banners.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [banners])
-
   return (
-    <PageContainer className="space-y-24 pb-20">
+    <div className="w-full animate-fade-in">
+      {/* Loading state */}
       {loading && featuredProducts.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-24 space-y-4">
-          <span className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
+        <div className="flex flex-col items-center justify-center py-32 space-y-4">
+          <span className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-secondary border-t-transparent" />
           <p className="text-sm font-heading font-bold text-ink-muted">Polishing wooden toys in the workshop...</p>
         </div>
       )}
 
+      {/* Error state */}
       {error && (
-        <div className="max-w-xl mx-auto bg-primary/10 border border-primary/20 p-8 rounded-xl text-center space-y-4 shadow-sm">
-          <p className="text-sm text-primary font-bold">⚠️ Connection Issue</p>
-          <p className="text-xs text-ink-muted leading-relaxed">{error}</p>
-          <button
-            onClick={() => fetchHomeData()}
-            className="btn-primary bg-primary hover:bg-primary-hover text-white px-6 py-2.5 text-xs rounded-lg font-heading font-bold"
-          >
-            Retry Connection
-          </button>
+        <div className="section-inner py-16">
+          <div className="max-w-xl mx-auto bg-primary/10 border border-primary/20 p-8 rounded-xl text-center space-y-4 shadow-sm">
+            <p className="text-sm text-primary font-bold">⚠️ Connection Issue</p>
+            <p className="text-xs text-ink-muted leading-relaxed">{error}</p>
+            <button
+              onClick={() => fetchHomeData()}
+              className="btn-primary bg-primary hover:bg-primary-hover text-white px-6 py-2.5 text-xs rounded-lg font-heading font-bold"
+            >
+              Retry Connection
+            </button>
+          </div>
         </div>
       )}
 
       {!loading && !error && (
         <>
-          {/* a. HERO SECTION / BANNERS CAROUSEL */}
-          {banners.length > 0 ? (
-            <section className="relative h-[65vh] min-h-[400px] w-full overflow-hidden bg-bg rounded-2xl border border-border shadow-xs group">
-              {/* Slider Container */}
-              <div 
-                className="w-full h-full flex transition-transform duration-500 ease-out" 
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {banners.map((banner) => (
-                  <div key={banner.id} className="w-full h-full shrink-0 relative">
-                    {banner.link ? (
-                      <Link to={banner.link} className="block w-full h-full">
-                        <img src={banner.url} alt="Showcase Slider" className="w-full h-full object-cover" />
-                      </Link>
-                    ) : (
-                      <img src={banner.url} alt="Showcase Slider" className="w-full h-full object-cover" />
-                    )}
-                  </div>
-                ))}
-              </div>
+          {/* ── 1. HERO — always shown, editorial 2-column layout ── */}
+          <HeroSection />
 
-              {/* Previous/Next Arrows */}
-              {banners.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setCurrentSlide(prev => (prev - 1 + banners.length) % banners.length)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-bg/80 hover:bg-bg border border-border p-2 rounded-full shadow-xs text-xs font-bold z-10 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ◀
-                  </button>
-                  <button
-                    onClick={() => setCurrentSlide(prev => (prev + 1) % banners.length)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-bg/80 hover:bg-bg border border-border p-2 rounded-full shadow-xs text-xs font-bold z-10 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    ▶
-                  </button>
-                </>
-              )}
+          {/* ── 2. CATEGORY STRIP ── */}
+          <CategoryStrip categories={categories} />
 
-              {/* Dots Indicator */}
-              {banners.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
-                  {banners.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`h-2 w-2 rounded-full transition-all ${
-                        idx === currentSlide ? 'bg-primary w-5' : 'bg-ink-muted/50 hover:bg-ink-muted/80'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
-          ) : (
-            <section className="relative h-[75vh] min-h-[500px] w-full overflow-hidden bg-bg rounded-2xl border border-border shadow-xs flex items-center px-6 sm:px-16">
-              {/* Background Spline 3D iframe */}
-              <div className="absolute inset-0 z-0 pointer-events-none">
-                <iframe
-                  src="https://my.spline.design/airplanecopy-pH4tfCaVMAv3K6UfPUCdPwUr/"
-                  frameBorder="0"
-                  width="100%"
-                  height="100%"
-                  title="Spline 3D Airplane Model"
-                ></iframe>
-              </div>
-
-              {/* Cover element to hide "Built with Spline" watermark badge */}
-              <div className="absolute bottom-0 right-0 w-[140px] h-[40px] bg-bg z-10 pointer-events-none" />
-
-              {/* Content Panel */}
-              <div className="relative z-10 max-w-lg text-left space-y-6">
-                <div className="space-y-3">
-                  <span className="bg-primary/15 text-primary text-xs font-heading font-extrabold px-3.5 py-1.5 rounded-full uppercase tracking-wider inline-block">
-                    Grand Opening 🧸
+          {/* ── 3. FEATURED COLLECTION SECTION (Combined) ── */}
+          {featuredProducts.length > 0 && (
+            <section className="w-full bg-bg" aria-label="Featured collection">
+              <div className="section-inner py-20 md:py-24 text-center space-y-12">
+                {/* Heading details */}
+                <div className="space-y-4">
+                  <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
+                    Staff Favourites
                   </span>
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-extrabold text-ink leading-tight">
-                    Pure Joy in Every Grain.
-                  </h1>
-                  <p className="font-body text-ink-muted text-sm sm:text-base leading-relaxed">
-                    Organic, chemical-free toys handcrafted in our family workshop. Designed to foster logic, creativity, and lifetime milestones.
+                  <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}>
+                    Featured Collection
+                  </h2>
+                  <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
+                    Our highest-rated, organic wood masterpieces — handpicked by our team this season.
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-3.5">
+                {/* Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                  {featuredProducts.map((product) => (
+                    <EditorialProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+
+                {/* Bottom CTA */}
+                <div className="pt-4">
                   <Link
                     to="/products"
-                    className="btn-primary bg-primary hover:bg-primary-hover/95 text-white font-heading font-bold py-3 px-8 rounded-lg shadow-sm text-sm"
+                    id="featured-view-all-btn"
+                    className="inline-flex items-center gap-2 font-heading font-bold text-sm text-white rounded-full px-7 py-3.5 transition-all duration-200 hover:opacity-90"
+                    style={{ backgroundColor: 'var(--color-primary)', boxShadow: '0 2px 10px rgba(255,92,77,0.3)' }}
                   >
-                    Browse Workshop
+                    View All Products
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
                   </Link>
-                  <a
-                    href="#categories"
-                    className="bg-secondary/5 border border-secondary/20 hover:bg-secondary/10 text-secondary font-heading font-bold py-3 px-8 rounded-lg text-sm transition-colors"
-                  >
-                    Explore Categories
-                  </a>
                 </div>
               </div>
             </section>
           )}
 
-          {/* b. POPULAR CATEGORIES */}
-          <section id="categories" className="space-y-6 scroll-mt-20">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-ink">Explore Categories</h2>
-              <p className="text-[11px] sm:text-xs text-ink-muted font-body">Tailored wood crafts built for developmental ages and interactive play.</p>
-            </div>
+          {/* ── 4. CURATED WITH CARE ── */}
+          <CuratedSection />
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {categories.map((cat, idx) => (
-                <Link
-                  key={cat}
-                  to={`/products?category=${encodeURIComponent(cat)}`}
-                  className="card-workshop bg-surface border border-border p-4.5 rounded-xl text-center space-y-3 hover:scale-102 hover:shadow-sm duration-200 block group"
-                >
-                  <div className="h-12 w-12 rounded-full bg-secondary/5 flex items-center justify-center mx-auto text-xl group-hover:bg-primary/15 transition-colors select-none">
-                    {['🧸', '🚗', '🎨', '🧩', '📚', '🌲'][idx % 6]}
-                  </div>
-                  <span className="font-heading font-bold text-xs text-ink block line-clamp-1">
-                    {cat}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          {/* c. FEATURED WORKSHOP PRODUCTS */}
-          <section className="space-y-6">
-            <div className="flex justify-between items-end border-b border-border/60 pb-3.5">
-              <div className="text-left space-y-1">
-                <h2 className="text-2xl sm:text-3xl font-heading font-extrabold text-ink">Staff Favorites</h2>
-                <p className="text-[11px] sm:text-xs text-ink-muted font-body">Our highest rated, organic wood masterpieces from this season.</p>
-              </div>
+          {/* ── PROMO STRIP (retained from original, minimal restyle) ── */}
+          <section className="w-full bg-secondary" aria-label="Promotion">
+            <div className="section-inner py-14 text-center space-y-4">
+              <span className="font-heading font-bold text-[11px] tracking-[0.25em] uppercase text-white/70 block">
+                Limited Time
+              </span>
+              <h2 className="font-heading font-bold text-white text-2xl sm:text-3xl">
+                Organic &amp; Child-Safe Play
+              </h2>
+              <p className="font-body text-white/80 text-sm sm:text-base max-w-lg mx-auto">
+                Get an extra <strong className="text-white">20% off</strong> your first order. Use{' '}
+                <code className="bg-white/15 px-2 py-0.5 rounded font-heading text-xs text-white tracking-wider">
+                  WOODTOY20
+                </code>{' '}
+                at checkout.
+              </p>
               <Link
                 to="/products"
-                className="text-xs font-heading font-bold text-accent-teal hover:underline uppercase tracking-wider select-none shrink-0"
+                id="promo-browse-btn"
+                className="inline-flex items-center gap-2 font-heading font-bold text-sm text-secondary bg-white rounded-full px-7 py-3.5 transition-all duration-200 hover:bg-bg mt-2"
               >
-                View Catalog ➜
+                Browse Collections
               </Link>
-            </div>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/products/${product.slug}`}
-                  className="card-workshop overflow-hidden flex flex-col group"
-                >
-                  <div className="h-44 bg-border flex items-center justify-center relative border-b border-border overflow-hidden select-none">
-                    <span className="text-5xl filter drop-shadow transition-transform duration-300 group-hover:scale-110">🧸</span>
-                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                      {product.discountPrice < product.price && (
-                        <BadgeTag text="sale" variant="red" />
-                      )}
-                      {product.stockStatus === 'Out of Stock' && (
-                        <BadgeTag text="sold out" variant="secondary" />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="p-4 flex-1 flex flex-col justify-between text-left space-y-2">
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-heading font-bold text-ink-muted uppercase tracking-wider block">
-                        {product.category}
-                      </span>
-                      <h3 className="font-heading text-ink text-base line-clamp-1 group-hover:text-accent-blue transition duration-200">
-                        {product.title}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
-                      <div className="flex items-baseline space-x-1">
-                        <span className="font-heading font-bold text-ink text-base">
-                          ${product.discountPrice.toFixed(2)}
-                        </span>
-                        {product.price > product.discountPrice && (
-                          <span className="font-body text-ink-muted line-through text-xs">
-                            ${product.price.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-xs font-heading font-bold text-ink flex items-center space-x-0.5">
-                        <span className="text-accent-yellow text-sm">★</span>
-                        <span>{product.rating.toFixed(1)}</span>
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          {/* d. BANNER/PROMO SECTION */}
-          <section>
-            <div className="bg-accent-teal/15 border border-accent-teal/30 rounded-xl p-8 sm:p-12 text-center space-y-5 max-w-4xl mx-auto shadow-xs">
-              <span className="bg-accent-teal/20 text-accent-teal text-xs font-heading font-bold px-3.5 py-1 rounded-full uppercase tracking-widest">
-                Limited Time Promo
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-heading text-ink">Organic & Child Safe Play</h2>
-              <p className="text-ink font-body text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
-                Get an extra <strong className="text-ink">20% off</strong> on your first order. Use the coupon code <code className="bg-surface px-2.5 py-1 border border-border text-primary font-bold rounded font-heading text-xs tracking-wider">WOODTOY20</code> at simulated checkout.
-              </p>
-              <div className="pt-2">
-                <Link
-                  to="/products"
-                  className="btn-primary bg-accent-teal hover:bg-accent-teal/95 text-white font-heading font-bold py-2.5 px-8 rounded-lg shadow-sm"
-                >
-                  Browse Collections
-                </Link>
-              </div>
             </div>
           </section>
         </>
       )}
-    </PageContainer>
+    </div>
   )
 }
 

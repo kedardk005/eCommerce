@@ -26,6 +26,7 @@ interface AuthContextType {
   addAddress: (address: Omit<Address, 'id'>) => void
   removeAddress: (id: string) => void
   updateAddress: (id: string, updated: Partial<Address>) => void
+  authFetch: (url: string, options?: RequestInit) => Promise<Response>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -44,15 +45,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   })
   const [addresses, setAddresses] = useState<Address[]>([])
 
-  const fetchAddresses = async () => {
+  const authFetch = async (url: string, options: RequestInit = {}): Promise<Response> => {
     const token = localStorage.getItem('accessToken')
-    if (!token) return
-    try {
-      const res = await fetch('/api/addresses', {
-        headers: {
-          'Authorization': `Bearer ${token}`
+    const headers = new Headers(options.headers)
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    let res = await fetch(url, { ...options, headers })
+
+    if (res.status === 401) {
+      try {
+        const refreshRes = await fetch('/api/auth/refresh', { method: 'POST' })
+        if (refreshRes.ok) {
+          const data = await refreshRes.json()
+          localStorage.setItem('accessToken', data.accessToken)
+          
+          const retryHeaders = new Headers(options.headers)
+          retryHeaders.set('Authorization', `Bearer ${data.accessToken}`)
+          res = await fetch(url, { ...options, headers: retryHeaders })
+        } else {
+          logout()
         }
-      })
+      } catch (err) {
+        console.error('[AuthContext] Token refresh failed:', err)
+        logout()
+      }
+    }
+
+    return res
+  }
+
+  const fetchAddresses = async () => {
+    try {
+      const res = await authFetch('/api/addresses')
       if (res.ok) {
         const data = await res.json()
         setAddresses(data)
@@ -90,14 +116,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }
 
   const addAddress = async (newAddr: Omit<Address, 'id'>) => {
-    const token = localStorage.getItem('accessToken')
-    if (!token) throw new Error('Not logged in')
     try {
-      const res = await fetch('/api/addresses', {
+      const res = await authFetch('/api/addresses', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(newAddr)
       })
@@ -136,7 +159,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         logout,
         addAddress,
         removeAddress,
-        updateAddress
+        updateAddress,
+        authFetch
       }}
     >
       {children}

@@ -58,10 +58,10 @@ export const OrderDetail: React.FC = () => {
   }
 
   // Format currency
-  const formatUSD = (val: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatINR = (val: number) => {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(val)
   }
 
@@ -129,9 +129,9 @@ export const OrderDetail: React.FC = () => {
                       <div className="text-[10px] text-ink-muted">Variant: {item.variantName}</div>
                     </td>
                     <td className="px-4 py-3 text-center font-mono">{item.quantity}</td>
-                    <td className="px-4 py-3 text-right font-mono">{formatUSD(item.price)}</td>
+                    <td className="px-4 py-3 text-right font-mono">{formatINR(item.price)}</td>
                     <td className="px-4 py-3 text-right font-mono font-semibold text-ink">
-                      {formatUSD(item.price * item.quantity)}
+                      {formatINR(item.price * item.quantity)}
                     </td>
                   </tr>
                 ))}
@@ -143,19 +143,19 @@ export const OrderDetail: React.FC = () => {
               <div className="w-64 space-y-1.5 text-xs">
                 <div className="flex justify-between text-ink-muted">
                   <span>Gross Subtotal:</span>
-                  <span className="font-mono">{formatUSD(order.subtotal ?? order.total)}</span>
+                  <span className="font-mono">{formatINR(order.subtotal ?? order.total)}</span>
                 </div>
                 <div className="flex justify-between text-ink-muted">
                   <span>Shipping Fee:</span>
-                  <span className="font-mono">{formatUSD(order.shipping ?? 0)}</span>
+                  <span className="font-mono">{formatINR(order.shipping ?? 0)}</span>
                 </div>
                 <div className="flex justify-between text-ink-muted border-b border-border pb-1.5">
                   <span>Discount Coupon:</span>
-                  <span className="font-mono">-{formatUSD(order.discount ?? 0)}</span>
+                  <span className="font-mono">-{formatINR(order.discount ?? 0)}</span>
                 </div>
                 <div className="flex justify-between font-heading font-extrabold text-ink text-sm pt-0.5">
                   <span>Grand Total:</span>
-                  <span className="font-mono">{formatUSD(order.total)}</span>
+                  <span className="font-mono">{formatINR(order.total)}</span>
                 </div>
               </div>
             </div>

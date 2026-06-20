@@ -107,7 +107,7 @@ export const Orders: React.FC = () => {
                   </p>
                   <p>
                     <span className="text-ink-muted">Total:</span>{' '}
-                    <strong className="text-primary">${order.total.toFixed(2)}</strong>
+                    <strong className="text-primary">₹{order.total.toFixed(2)}</strong>
                   </p>
                 </div>
               </div>

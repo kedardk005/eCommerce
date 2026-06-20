@@ -9,6 +9,7 @@ interface ReturnDetailItem {
   variantName: string
   quantity: number
   price: number
+  productImage?: string | null
 }
 
 interface ReturnRequestDetail {
@@ -149,8 +150,16 @@ export const ReturnDetail: React.FC = () => {
             {ret.items.map((item) => (
               <div key={item.id} className="py-4 flex items-center justify-between first:pt-0 last:pb-0">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-border rounded flex items-center justify-center border border-border shrink-0 select-none">
-                    <span className="text-xl">🧸</span>
+                  <div className="w-12 h-12 bg-border rounded flex items-center justify-center border border-border shrink-0 select-none overflow-hidden">
+                    {item.productImage ? (
+                      <img
+                        src={item.productImage}
+                        alt={item.productTitle}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-xl">🧸</span>
+                    )}
                   </div>
                   <div>
                     <h4 className="font-heading text-ink text-sm font-bold">{item.productTitle}</h4>
@@ -159,7 +168,7 @@ export const ReturnDetail: React.FC = () => {
                   </div>
                 </div>
                 <span className="font-heading font-bold text-ink">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  ₹{(item.price * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -191,7 +200,7 @@ export const ReturnDetail: React.FC = () => {
 
               <div className="border-t border-border/30 pt-3 flex justify-between items-center font-heading text-base font-bold text-ink">
                 <span>Est. Refund Total</span>
-                <span className="text-primary">${ret.refundAmount.toFixed(2)}</span>
+                <span className="text-primary">₹{ret.refundAmount.toFixed(2)}</span>
               </div>
             </div>
           </div>

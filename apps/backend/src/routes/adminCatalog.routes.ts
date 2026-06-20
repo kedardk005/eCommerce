@@ -25,8 +25,8 @@ const createProductSchema = z.object({
     attributes: z.record(z.string(), z.any())
   })).min(1, 'At least one variant is required'),
   images: z.array(z.object({
-    r2Key: z.string().min(1, 'r2Key is required'),
-    url: z.string().url('Invalid image URL'),
+    r2Key: z.string().optional().default('uploaded'),
+    url: z.string().min(1, 'Image URL or base64 data is required'),
     position: z.number().int().nonnegative().default(0)
   })).optional()
 })
@@ -49,8 +49,8 @@ const updateProductSchema = z.object({
     attributes: z.record(z.string(), z.any())
   })).optional(),
   images: z.array(z.object({
-    r2Key: z.string(),
-    url: z.string().url(),
+    r2Key: z.string().optional().default('uploaded'),
+    url: z.string().min(1),
     position: z.number().int().nonnegative().default(0)
   })).optional()
 })
@@ -290,30 +290,52 @@ router.delete(
     action: 'DELETE_PRODUCT',
     entityType: 'Product',
     entityId: req.params.id,
-    metadata: { status: 'archived' }
+    metadata: { status: 'deleted' }
   }))(async (req: AuthenticatedRequest, res: Response) => {
     const productId = req.params.id
 
     try {
       const product = await prisma.product.findUnique({
-        where: { id: productId }
+        where: { id: productId },
+        include: { variants: true }
       })
 
       if (!product) {
         return res.status(404).json({ error: 'Product not found.' })
       }
 
-      const archivedProduct = await prisma.product.update({
-        where: { id: productId },
-        data: { status: 'archived' }
+      const variantIds = product.variants.map(v => v.id)
+
+      await prisma.$transaction(async (tx) => {
+        // Find order items referencing these variants
+        const orderItems = await tx.orderItem.findMany({
+          where: { productVariantId: { in: variantIds } },
+          select: { id: true }
+        })
+        const orderItemIds = orderItems.map(oi => oi.id)
+
+        if (orderItemIds.length > 0) {
+          // Delete related return items first
+          await tx.returnItem.deleteMany({
+            where: { orderItemId: { in: orderItemIds } }
+          })
+          // Delete order items
+          await tx.orderItem.deleteMany({
+            where: { id: { in: orderItemIds } }
+          })
+        }
+
+        // Delete the product. Prisma will cascade-delete variants, images, reviews, wishlists, carts.
+        await tx.product.delete({
+          where: { id: productId }
+        })
       })
 
       CacheService.invalidateProduct(product.slug)
 
       return res.json({
         status: 'success',
-        message: 'Product archived successfully.',
-        product: archivedProduct
+        message: 'Product deleted successfully.'
       })
     } catch (error) {
       console.error('[AdminCatalogRoutes] Error deleting product:', error)

@@ -27,7 +27,7 @@ async function getOrCreateSettings() {
         id: 'global',
         storeName: 'Toy Cabin',
         supportContact: 'support@toycabin.com',
-        currency: 'USD',
+        currency: 'INR',
         lowStockThreshold: 10,
         codToggle: true,
         onlineToggle: true

@@ -59,7 +59,8 @@ function mapReturnToDto(ret: any) {
       productTitle: item.orderItem?.titleSnapshot || 'Product',
       variantName: item.orderItem?.productVariant?.attributes?.name || item.orderItem?.productVariant?.name || 'Standard',
       quantity: item.quantity,
-      price: item.orderItem?.priceSnapshot ? item.orderItem.priceSnapshot / 100 : 0
+      price: item.orderItem?.priceSnapshot ? item.orderItem.priceSnapshot / 100 : 0,
+      productImage: item.orderItem?.productVariant?.product?.images?.[0]?.url || null
     }))
   }
 }
@@ -211,7 +212,15 @@ router.post('/orders/:id/return', requireAuth, rateLimit({
             include: {
               orderItem: {
                 include: {
-                  productVariant: true
+                  productVariant: {
+                    include: {
+                      product: {
+                        include: {
+                          images: { orderBy: { position: 'asc' } }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -268,7 +277,15 @@ router.get('/returns', requireAuth, async (req: AuthenticatedRequest, res: Respo
           include: {
             orderItem: {
               include: {
-                productVariant: true
+                productVariant: {
+                  include: {
+                    product: {
+                      include: {
+                        images: { orderBy: { position: 'asc' } }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -317,7 +334,15 @@ router.get('/returns/:id', requireAuth, async (req: AuthenticatedRequest, res: R
           include: {
             orderItem: {
               include: {
-                productVariant: true
+                productVariant: {
+                  include: {
+                    product: {
+                      include: {
+                        images: { orderBy: { position: 'asc' } }
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -406,7 +431,15 @@ router.get(
             include: {
               orderItem: {
                 include: {
-                  productVariant: true
+                  productVariant: {
+                    include: {
+                      product: {
+                        include: {
+                          images: { orderBy: { position: 'asc' } }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -486,7 +519,15 @@ router.patch(
             include: {
               orderItem: {
                 include: {
-                  productVariant: true
+                  productVariant: {
+                    include: {
+                      product: {
+                        include: {
+                          images: { orderBy: { position: 'asc' } }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -560,7 +601,15 @@ router.patch(
             include: {
               orderItem: {
                 include: {
-                  productVariant: true
+                  productVariant: {
+                    include: {
+                      product: {
+                        include: {
+                          images: { orderBy: { position: 'asc' } }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -618,7 +667,11 @@ router.post(
                   include: {
                     productVariant: {
                       include: {
-                        product: true
+                        product: {
+                          include: {
+                            images: { orderBy: { position: 'asc' } }
+                          }
+                        }
                       }
                     }
                   }
@@ -664,7 +717,11 @@ router.post(
                   include: {
                     productVariant: {
                       include: {
-                        product: true
+                        product: {
+                          include: {
+                            images: { orderBy: { position: 'asc' } }
+                          }
+                        }
                       }
                     }
                   }

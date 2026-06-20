@@ -22,6 +22,7 @@ export interface AdminProduct {
   variants: AdminVariant[]
   status: 'Active' | 'Draft' | 'Archived'
   imageColor: string
+  images?: { id?: string; r2Key?: string; url: string; position?: number }[]
 }
 
 export interface AdminOrderItem {
@@ -359,7 +360,13 @@ const mapBackendProductToAdminProduct = (p: any): AdminProduct => {
       stock: v.stock
     })) : [],
     status: p.status === 'active' ? 'Active' : (p.status === 'draft' ? 'Draft' : 'Archived'),
-    imageColor: 'bg-primary'
+    imageColor: 'bg-primary',
+    images: p.images ? p.images.map((img: any) => ({
+      id: img.id,
+      r2Key: img.r2Key,
+      url: img.url,
+      position: img.position
+    })) : []
   }
 }
 
@@ -1126,13 +1133,19 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         stock: v.stock,
         attributes: { name: v.name }
       })),
-      images: [
-        {
-          r2Key: 'products/default/main.webp',
-          url: 'https://media.nilkanthtoys.com/products/default/main.webp',
-          position: 0
-        }
-      ]
+      images: product.images && product.images.length > 0
+        ? product.images.map((img, idx) => ({
+            r2Key: img.r2Key || 'uploaded',
+            url: img.url,
+            position: img.position ?? idx
+          }))
+        : [
+            {
+              r2Key: 'products/default/main.webp',
+              url: 'https://media.nilkanthtoys.com/products/default/main.webp',
+              position: 0
+            }
+          ]
     }
 
     try {
@@ -1172,7 +1185,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     const finalVariants = updated.variants || product.variants
 
-    const payload = {
+    const payload: any = {
       title: finalTitle,
       slug: finalTitle.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
       description: updated.description !== undefined ? updated.description : product.description,
@@ -1187,6 +1200,14 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         sku: v.sku || `TOY-${finalTitle.toUpperCase().replace(/\s+/g, '-')}-${idx}-${Date.now()}`,
         stock: v.stock,
         attributes: { name: v.name }
+      }))
+    }
+
+    if (updated.images !== undefined) {
+      payload.images = updated.images.map((img: any, idx: number) => ({
+        r2Key: img.r2Key || 'uploaded',
+        url: img.url,
+        position: img.position ?? idx
       }))
     }
 
@@ -1223,7 +1244,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         await fetchProducts()
       } else {
         const err = await res.json()
-        throw new Error(err.error || 'Failed to archive product.')
+        throw new Error(err.error || 'Failed to delete product.')
       }
     } catch (err: any) {
       console.error(err)

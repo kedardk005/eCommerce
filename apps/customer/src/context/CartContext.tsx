@@ -26,7 +26,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, authFetch } = useAuth()
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [cartItemsRaw, setCartItemsRaw] = useState<any[]>([])
   const [activeCoupon, setActiveCouponState] = useState<string>('')
@@ -58,7 +58,14 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           stock: varOpt.stock
         })) : [],
         reviews: [],
-        imageColor: 'bg-primary'
+        imageColor: 'bg-primary',
+        image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+        images: p.images ? p.images.map((img: any) => ({
+          id: img.id,
+          r2Key: img.r2Key,
+          url: img.url,
+          position: img.position
+        })) : []
       }
 
       const mappedVariant: Variant = {
@@ -87,17 +94,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Fetch cart from backend
   const fetchCart = async () => {
-    const token = localStorage.getItem('accessToken')
-    if (!token) return
-
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/cart', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const res = await authFetch('/api/cart')
       if (!res.ok) {
         throw new Error('Failed to load cart')
       }
@@ -149,12 +149,11 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw new Error(`Product variant "${targetName}" is not available.`)
       }
 
-      // 2. Call backend Cart item add endpoint
-      const resAdd = await fetch('/api/cart/items', {
+      // 2. Call backend Cart item add endpoint using authFetch
+      const resAdd = await authFetch('/api/cart/items', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           productId: realProduct.id,
@@ -196,11 +195,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/cart/items/${matched.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await authFetch(`/api/cart/items/${matched.id}`, {
+        method: 'DELETE'
       })
       if (!res.ok) {
         throw new Error('Failed to remove item from cart')
@@ -237,11 +233,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/cart/items/${matched.id}`, {
+      const res = await authFetch(`/api/cart/items/${matched.id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ quantity })
       })
@@ -274,11 +269,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/cart', {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await authFetch('/api/cart', {
+        method: 'DELETE'
       })
       if (!res.ok) {
         throw new Error('Failed to clear cart')
@@ -302,11 +294,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (!code) {
       setLoading(true)
       try {
-        await fetch('/api/cart/coupon', {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        await authFetch('/api/cart/coupon', {
+          method: 'DELETE'
         })
         setActiveCouponState('')
         setCouponDiscount(0)
@@ -321,11 +310,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/cart/apply-coupon', {
+      const res = await authFetch('/api/cart/apply-coupon', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ code })
       })

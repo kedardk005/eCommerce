@@ -10,7 +10,7 @@ import BadgeTag from '../components/BadgeTag'
 
 export const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
-  const { isLoggedIn, user } = useAuth()
+  const { isLoggedIn, user, authFetch } = useAuth()
   const navigate = useNavigate()
   const { addToCart } = useCart()
   const { addToWishlist } = useWishlist()
@@ -74,7 +74,14 @@ export const ProductDetail: React.FC = () => {
           name: v.attributes?.name || v.name || 'Standard',
           stock: v.stock
         })) : [],
-        reviews: []
+        reviews: [],
+        image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+        images: p.images ? p.images.map((img: any) => ({
+          id: img.id,
+          r2Key: img.r2Key,
+          url: img.url,
+          position: img.position
+        })) : []
       }
 
       setProduct(formattedProduct)
@@ -112,7 +119,14 @@ export const ProductDetail: React.FC = () => {
               stock: v.stock
             })) : [],
             reviews: [],
-            imageColor: 'bg-primary'
+            imageColor: 'bg-primary',
+            image: rp.images && rp.images.length > 0 ? rp.images[0].url : undefined,
+            images: rp.images ? rp.images.map((img: any) => ({
+              id: img.id,
+              r2Key: img.r2Key,
+              url: img.url,
+              position: img.position
+            })) : []
           }
         })
         setRelatedProducts(formattedRel)
@@ -224,11 +238,10 @@ export const ProductDetail: React.FC = () => {
 
     setIsSubmittingReview(true)
     try {
-      const res = await fetch(`/api/products/${product.id}/reviews`, {
+      const res = await authFetch(`/api/products/${product.id}/reviews`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           rating: newRating,
@@ -257,11 +270,8 @@ export const ProductDetail: React.FC = () => {
       if (!token) return
 
       try {
-        const res = await fetch(`/api/reviews/${revId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+        const res = await authFetch(`/api/reviews/${revId}`, {
+          method: 'DELETE'
         })
         if (res.ok) {
           await fetchProductDetail()
@@ -285,11 +295,10 @@ export const ProductDetail: React.FC = () => {
 
     setIsSubmittingEditReview(true)
     try {
-      const res = await fetch(`/api/reviews/${revId}`, {
+      const res = await authFetch(`/api/reviews/${revId}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           rating: editingRating,
@@ -329,31 +338,41 @@ export const ProductDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         {/* Left: Product Images */}
         <div className="space-y-4">
-          <div className="h-[350px] sm:h-[450px] bg-border rounded-2xl flex items-center justify-center border border-border relative select-none shadow-xs border-b-[3px] border-primary">
-            <span className="text-8xl filter drop-shadow">🧸</span>
+          <div className="h-[350px] sm:h-[450px] bg-border rounded-2xl flex items-center justify-center border border-border relative select-none shadow-xs border-b-[3px] border-primary overflow-hidden w-full">
+            {product.images && product.images.length > 0 && product.images[activeImageIndex]?.url ? (
+              <img
+                src={product.images[activeImageIndex].url}
+                alt={product.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-8xl filter drop-shadow">🧸</span>
+            )}
             <div className="absolute top-4 left-4">
               {product.discountPrice < product.price && (
-                <BadgeTag text={`save $${(product.price - product.discountPrice).toFixed(0)}`} variant="red" />
+                <BadgeTag text={`save ₹${(product.price - product.discountPrice).toFixed(0)}`} variant="red" />
               )}
             </div>
           </div>
 
-          {/* Mini thumbnails (mock) */}
-          <div className="flex gap-3">
-            {[1, 2, 3].map((num, idx) => (
-              <button
-                key={num}
-                onClick={() => setActiveImageIndex(idx)}
-                className={`w-20 h-20 rounded-xl border flex items-center justify-center transition ${
-                  idx === activeImageIndex 
-                    ? 'border-secondary bg-bg/20 shadow-xs ring-2 ring-secondary/20' 
-                    : 'border-border bg-surface hover:bg-bg'
-                }`}
-              >
-                <span className="text-2xl">🧸</span>
-              </button>
-            ))}
-          </div>
+          {/* Mini thumbnails */}
+          {product.images && product.images.length > 1 && (
+            <div className="flex flex-wrap gap-3">
+              {product.images.map((img: any, idx: number) => (
+                <button
+                  key={img.id || idx}
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`w-20 h-20 rounded-xl border flex items-center justify-center overflow-hidden transition shrink-0 ${
+                    idx === activeImageIndex 
+                      ? 'border-secondary bg-bg/20 shadow-xs ring-2 ring-secondary/20' 
+                      : 'border-border bg-surface hover:bg-bg'
+                  }`}
+                >
+                  <img src={img.url} alt="thumbnail" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: Product Details */}
@@ -377,11 +396,11 @@ export const ProductDetail: React.FC = () => {
           {/* Pricing */}
           <div className="flex items-baseline space-x-3 border-y border-border/60 py-4">
             <span className="text-3xl sm:text-4xl font-heading font-bold text-ink">
-              ${product.discountPrice.toFixed(2)}
+              ₹{product.discountPrice.toFixed(2)}
             </span>
             {product.price > product.discountPrice && (
               <span className="text-lg font-body text-ink-muted line-through">
-                ${product.price.toFixed(2)}
+                ₹{product.price.toFixed(2)}
               </span>
             )}
           </div>
@@ -645,8 +664,17 @@ export const ProductDetail: React.FC = () => {
                 className="card-workshop overflow-hidden flex flex-col group border-b-[3px]"
               >
                 {/* Image Placeholder with wood grain */}
-                <div className="h-40 bg-border flex items-center justify-center relative border-b border-border overflow-hidden select-none">
-                  <span className="text-3xl filter drop-shadow group-hover:scale-110 transition-transform duration-300">🧸</span>
+                <div className="h-40 bg-border flex items-center justify-center relative border-b border-border overflow-hidden select-none w-full">
+                  {rel.image ? (
+                    <img
+                      src={rel.image}
+                      alt={rel.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-3xl filter drop-shadow group-hover:scale-110 transition-transform duration-300">🧸</span>
+                  )}
                 </div>
                 {/* Product Info */}
                 <div className="p-3 flex-1 flex flex-col justify-between text-left space-y-1.5">
@@ -655,7 +683,7 @@ export const ProductDetail: React.FC = () => {
                   </h4>
                   <div className="flex justify-between items-center pt-1.5 border-t border-border/40">
                     <span className="font-heading font-bold text-ink text-sm sm:text-base">
-                      ${rel.discountPrice.toFixed(2)}
+                      ₹{rel.discountPrice.toFixed(2)}
                     </span>
                     <span className="text-xs font-heading font-bold text-ink flex items-center space-x-0.5">
                       <span className="text-accent-yellow">★</span>

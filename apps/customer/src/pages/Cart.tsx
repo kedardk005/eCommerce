@@ -20,10 +20,10 @@ export const Cart: React.FC = () => {
   // Discount calculation from CartContext API validation
   const { couponDiscount: discount } = useCart()
 
-  // Delivery configuration (e.g. $5 flat rate, free over $50)
+  // Delivery configuration (e.g. ₹50 flat rate, free over ₹500)
   const deliveryFee = useMemo(() => {
-    if (subtotal === 0 || subtotal >= 50) return 0
-    return 5.0
+    if (subtotal === 0 || subtotal >= 500) return 0
+    return 50.0
   }, [subtotal])
 
   // Net total
@@ -82,8 +82,12 @@ export const Cart: React.FC = () => {
             >
               {/* Product Info / Image Box */}
               <div className="flex items-center space-x-4 w-full sm:w-auto text-left select-none">
-                <div className="w-16 h-16 bg-border rounded-lg flex items-center justify-center border border-border shrink-0 shadow-inner">
-                  <span className="text-3xl">🧸</span>
+                <div className="w-16 h-16 bg-border rounded-lg flex items-center justify-center border border-border shrink-0 shadow-inner overflow-hidden">
+                  {item.product.image ? (
+                    <img src={item.product.image} alt={item.product.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl">🧸</span>
+                  )}
                 </div>
                 <div>
                   <Link
@@ -94,7 +98,7 @@ export const Cart: React.FC = () => {
                   </Link>
                   <p className="text-xs font-body text-ink-muted">Variant: {item.variant.name}</p>
                   <p className="text-sm font-heading text-ink font-bold mt-1">
-                    ${item.product.discountPrice.toFixed(2)}
+                    ₹{item.product.discountPrice.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -120,7 +124,7 @@ export const Cart: React.FC = () => {
 
                 {/* Subtotal price for item */}
                 <span className="font-heading text-ink text-base font-bold w-20 text-right">
-                  ${(item.product.discountPrice * item.quantity).toFixed(2)}
+                  ₹{(item.product.discountPrice * item.quantity).toFixed(2)}
                 </span>
 
                 {/* Remove button */}
@@ -146,7 +150,7 @@ export const Cart: React.FC = () => {
           <div className="space-y-3 font-body text-sm text-ink border-b border-border/60 pb-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span className="font-semibold">${subtotal.toFixed(2)}</span>
+              <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
             </div>
             {discount > 0 && (
               <div className="flex justify-between text-accent-teal font-semibold">
@@ -159,7 +163,7 @@ export const Cart: React.FC = () => {
                     (Remove)
                   </button>
                 </div>
-                <span>-${discount.toFixed(2)}</span>
+                <span>-₹{discount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between">
@@ -168,13 +172,13 @@ export const Cart: React.FC = () => {
                 {deliveryFee === 0 ? (
                   <span className="text-accent-teal font-bold">Free</span>
                 ) : (
-                  `$${deliveryFee.toFixed(2)}`
+                  `₹${deliveryFee.toFixed(2)}`
                 )}
               </span>
             </div>
             {deliveryFee > 0 && (
               <p className="text-[11px] text-ink-muted leading-tight italic">
-                Add <strong>${(50 - subtotal).toFixed(2)}</strong> more in products to unlock free delivery!
+                Add <strong>₹{(500 - subtotal).toFixed(2)}</strong> more in products to unlock free delivery!
               </p>
             )}
           </div>
@@ -211,7 +215,7 @@ export const Cart: React.FC = () => {
           <div className="flex justify-between items-baseline pt-2 border-t border-border/40">
             <span className="font-heading text-lg text-ink font-bold">Total</span>
             <span className="font-heading text-2xl text-primary font-bold">
-              ${total.toFixed(2)}
+              ₹{total.toFixed(2)}
             </span>
           </div>
 

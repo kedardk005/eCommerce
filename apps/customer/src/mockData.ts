@@ -27,6 +27,8 @@ export interface Product {
   variants: Variant[]
   reviews: Review[]
   imageColor: string // CSS color class to make the visual boxes beautiful
+  image?: string
+  images?: { id?: string; r2Key?: string; url: string; position?: number }[]
 }
 
 export const CATEGORIES = [

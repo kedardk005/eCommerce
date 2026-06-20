@@ -163,7 +163,7 @@ export const Tickets: React.FC = () => {
                 <option value="">-- No Order Selected --</option>
                 {orders.map((o) => (
                   <option key={o.id} value={o.id}>
-                    Order #{o.id.split('-')[1] || o.id} - ${o.total.toFixed(2)}
+                    Order #{o.id.split('-')[1] || o.id} - ₹{o.total.toFixed(2)}
                   </option>
                 ))}
               </select>

@@ -17,7 +17,7 @@ const FAQ_ITEMS: FaqItem[] = [
   },
   {
     question: 'Do you offer free shipping?',
-    answer: 'Yes! We offer free standard delivery on all orders above $50. For orders below $50, we charge a flat estimated delivery fee of $5.00.'
+    answer: 'Yes! We offer free standard delivery on all orders above ₹500. For orders below ₹500, we charge a flat estimated delivery fee of ₹50.'
   },
   {
     question: 'What is your return and exchange policy?',

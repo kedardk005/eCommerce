@@ -63,10 +63,8 @@ export const Catalog: React.FC = () => {
 
   // Listen to URL search param changes (e.g. from Home page category strip clicks)
   useEffect(() => {
-    const cat = searchParams.get('category')
-    if (cat) {
-      setSelectedCategory(cat)
-    }
+    const cat = searchParams.get('category') || ''
+    setSelectedCategory(cat)
   }, [searchParams])
 
   // Debounce search query
@@ -125,7 +123,14 @@ export const Catalog: React.FC = () => {
             stock: v.stock
           })) : [],
           reviews: [],
-          imageColor: 'bg-primary'
+          imageColor: 'bg-primary',
+          image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+          images: p.images ? p.images.map((img: any) => ({
+            id: img.id,
+            r2Key: img.r2Key,
+            url: img.url,
+            position: img.position
+          })) : []
         }
       })
 
@@ -302,7 +307,7 @@ export const Catalog: React.FC = () => {
 
             {/* Price Range Filter */}
             <div className="space-y-2.5 border-t border-border/60 pt-4">
-              <span className="text-[10px] font-heading font-bold text-ink-muted uppercase tracking-widest block font-medium">Price Range ($)</span>
+              <span className="text-[10px] font-heading font-bold text-ink-muted uppercase tracking-widest block font-medium">Price Range (₹)</span>
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
@@ -407,8 +412,17 @@ export const Catalog: React.FC = () => {
                   className="card-workshop overflow-hidden flex flex-col group"
                 >
                   {/* Image placeholder */}
-                  <div className="h-40 sm:h-48 bg-border flex items-center justify-center relative border-b border-border overflow-hidden select-none">
-                    <span className="text-4xl sm:text-5xl filter drop-shadow transition-transform duration-300 group-hover:scale-110">🧸</span>
+                  <div className="h-40 sm:h-48 bg-border flex items-center justify-center relative border-b border-border overflow-hidden select-none w-full">
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-4xl sm:text-5xl filter drop-shadow transition-transform duration-300 group-hover:scale-110">🧸</span>
+                    )}
                     {/* Corner Tag Badges */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2.5 items-start">
                       {product.discountPrice < product.price && (
@@ -437,11 +451,11 @@ export const Catalog: React.FC = () => {
                     <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
                       <div className="flex items-baseline space-x-1.5">
                         <span className="font-heading font-bold text-ink text-base sm:text-lg">
-                          ${product.discountPrice.toFixed(2)}
+                          ₹{product.discountPrice.toFixed(2)}
                         </span>
                         {product.price > product.discountPrice && (
                           <span className="font-body text-ink-muted line-through text-xs">
-                            ${product.price.toFixed(2)}
+                            ₹{product.price.toFixed(2)}
                           </span>
                         )}
                       </div>

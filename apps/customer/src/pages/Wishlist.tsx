@@ -35,8 +35,16 @@ export const Wishlist: React.FC = () => {
             className="card-workshop overflow-hidden flex flex-col group border-b-[3px]"
           >
             {/* Image Box */}
-            <div className="h-40 bg-border flex items-center justify-center relative border-b border-border select-none overflow-hidden">
-              <span className="text-4xl filter drop-shadow group-hover:scale-110 transition-transform duration-300">🧸</span>
+            <div className="h-40 bg-border flex items-center justify-center relative border-b border-border select-none overflow-hidden w-full">
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <span className="text-4xl filter drop-shadow group-hover:scale-110 transition-transform duration-300">🧸</span>
+              )}
               <button
                 onClick={() => removeFromWishlist(product.id)}
                 className="absolute top-2 right-2 w-7 h-7 bg-surface/90 hover:bg-surface border border-border/80 flex items-center justify-center rounded-full text-primary font-bold text-base shadow-xs transition duration-150 active:scale-95"
@@ -59,7 +67,7 @@ export const Wishlist: React.FC = () => {
                   {product.title}
                 </Link>
                 <p className="font-heading text-ink font-bold text-sm sm:text-base mt-1.5 border-t border-border/20 pt-1">
-                  ${product.discountPrice.toFixed(2)}
+                  ₹{product.discountPrice.toFixed(2)}
                 </p>
               </div>
 

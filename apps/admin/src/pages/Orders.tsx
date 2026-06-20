@@ -78,10 +78,10 @@ export const Orders: React.FC = () => {
   }
 
   // Format currency
-  const formatUSD = (val: number) => {
-    return new Intl.NumberFormat('en-US', {
+  const formatINR = (val: number) => {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(val)
   }
 
@@ -202,7 +202,7 @@ export const Orders: React.FC = () => {
                       <td className="px-4 py-3 text-ink-muted">{order.date}</td>
                       <td className="px-4 py-3 text-center font-mono">{totalItems} toys</td>
                       <td className="px-4 py-3 text-right font-mono font-bold text-ink">
-                        {formatUSD(order.total)}
+                        {formatINR(order.total)}
                       </td>
                       <td className="px-4 py-3 text-center font-semibold text-ink-muted">
                         {order.paymentMethod}

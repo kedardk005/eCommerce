@@ -429,8 +429,16 @@ export const OrderDetail: React.FC = () => {
               >
                 <div className="flex items-center space-x-4">
                   {/* Thumbnail with wood grain */}
-                  <div className="w-14 h-14 bg-border rounded flex items-center justify-center border border-border shrink-0 select-none">
-                    <span className="text-2xl">🧸</span>
+                  <div className="w-14 h-14 bg-border rounded flex items-center justify-center border border-border shrink-0 select-none overflow-hidden">
+                    {item.product.image ? (
+                      <img
+                        src={item.product.image}
+                        alt={item.product.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl">🧸</span>
+                    )}
                   </div>
                   <div>
                     <Link
@@ -444,7 +452,7 @@ export const OrderDetail: React.FC = () => {
                   </div>
                 </div>
                 <span className="font-heading font-bold text-ink">
-                  ${(item.product.discountPrice * item.quantity).toFixed(2)}
+                  ₹{(item.product.discountPrice * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
@@ -492,12 +500,12 @@ export const OrderDetail: React.FC = () => {
             <div className="space-y-2.5 font-body text-xs sm:text-sm text-ink">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
+                <span>₹{order.subtotal.toFixed(2)}</span>
               </div>
               {order.discount > 0 && (
                 <div className="flex justify-between text-accent-teal font-semibold">
                   <span>Discount</span>
-                  <span>-${order.discount.toFixed(2)}</span>
+                  <span>-₹{order.discount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between">
@@ -506,13 +514,13 @@ export const OrderDetail: React.FC = () => {
                   {order.deliveryFee === 0 ? (
                     <span className="text-accent-teal font-bold">Free</span>
                   ) : (
-                    `$${order.deliveryFee.toFixed(2)}`
+                    `₹${order.deliveryFee.toFixed(2)}`
                   )}
                 </span>
               </div>
               <div className="flex justify-between border-t border-border/40 pt-2.5 font-heading text-sm sm:text-base font-bold text-ink">
                 <span>Total</span>
-                <span className="text-primary">${order.total.toFixed(2)}</span>
+                <span className="text-primary">₹{order.total.toFixed(2)}</span>
               </div>
             </div>
           </div>

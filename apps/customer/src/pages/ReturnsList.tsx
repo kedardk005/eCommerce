@@ -173,7 +173,7 @@ export const ReturnsList: React.FC = () => {
                   </p>
                   <p>
                     <span className="text-ink-muted">Est. Refund:</span>{' '}
-                    <strong className="text-primary">${ret.refundAmount.toFixed(2)}</strong>
+                    <strong className="text-primary">₹{ret.refundAmount.toFixed(2)}</strong>
                   </p>
                 </div>
               </div>

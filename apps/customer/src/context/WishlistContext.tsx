@@ -16,7 +16,7 @@ interface WishlistContextType {
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined)
 
 export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, authFetch } = useAuth()
   const { updateCartItemsRaw } = useCart()
   const [wishlistItems, setWishlistItems] = useState<Product[]>([])
   const [rawWishlist, setRawWishlist] = useState<any[]>([])
@@ -45,7 +45,14 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
           stock: v.stock
         })) : [],
         reviews: [],
-        imageColor: 'bg-primary'
+        imageColor: 'bg-primary',
+        image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+        images: p.images ? p.images.map((img: any) => ({
+          id: img.id,
+          r2Key: img.r2Key,
+          url: img.url,
+          position: img.position
+        })) : []
       }
     })
   }
@@ -58,11 +65,7 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/wishlist', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const res = await authFetch('/api/wishlist')
       if (!res.ok) {
         throw new Error('Failed to load wishlist')
       }
@@ -105,11 +108,10 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
       const { product: realProduct } = await resDetail.json()
 
       // 2. Post to backend
-      const resAdd = await fetch('/api/wishlist/items', {
+      const resAdd = await authFetch('/api/wishlist/items', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           productId: realProduct.id
@@ -144,11 +146,8 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/wishlist/items/${matched.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await authFetch(`/api/wishlist/items/${matched.id}`, {
+        method: 'DELETE'
       })
       if (!res.ok) {
         throw new Error('Failed to remove item from wishlist')
@@ -175,11 +174,8 @@ export const WishlistProvider: React.FC<{ children: ReactNode }> = ({ children }
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`/api/wishlist/items/${matched.id}/move-to-cart`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await authFetch(`/api/wishlist/items/${matched.id}/move-to-cart`, {
+        method: 'POST'
       })
 
       if (!res.ok) {
