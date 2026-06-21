@@ -553,7 +553,7 @@ export const ProductDetail: React.FC = () => {
           <div className="space-y-4 max-w-2xl">
             {reviews.map((rev) => {
               const isEditing = editingReviewId === rev.id
-              const isAuthor = isLoggedIn && rev.userId === user?.email
+              const isAuthor = isLoggedIn && rev.userId === user?.id
 
               return (
                 <div key={rev.id} className="card-workshop p-5 space-y-3 bg-surface border-b-[2px] border-border shadow-xs">

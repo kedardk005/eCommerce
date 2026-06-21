@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -16,6 +16,13 @@ export const Checkout: React.FC = () => {
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
     addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || ''
   )
+
+  // Sync selectedAddressId when addresses load or change
+  useEffect(() => {
+    if (!selectedAddressId && addresses.length > 0) {
+      setSelectedAddressId(addresses.find((a) => a.isDefault)?.id || addresses[0]?.id || '')
+    }
+  }, [addresses, selectedAddressId])
 
   // Address creation form toggle and fields
   const [showNewAddressForm, setShowNewAddressForm] = useState(false)

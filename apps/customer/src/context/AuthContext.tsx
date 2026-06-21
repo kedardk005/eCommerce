@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 
 interface User {
+  id: string
   name: string
   email: string
+  role?: string
 }
 
 export interface Address {
@@ -24,8 +26,8 @@ interface AuthContextType {
   login: (user: User, token?: string) => void
   logout: () => void
   addAddress: (address: Omit<Address, 'id'>) => void
-  removeAddress: (id: string) => void
-  updateAddress: (id: string, updated: Partial<Address>) => void
+  removeAddress: (id: string) => Promise<void>
+  updateAddress: (id: string, updated: Partial<Address>) => Promise<void>
   authFetch: (url: string, options?: RequestInit) => Promise<Response>
 }
 
@@ -135,18 +137,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }
 
-  const removeAddress = (id: string) => {
-    setAddresses((prev) => prev.filter((a) => a.id !== id))
+  const removeAddress = async (id: string) => {
+    try {
+      const res = await authFetch(`/api/addresses/${id}`, {
+        method: 'DELETE'
+      })
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}))
+        throw new Error(errJson.error || 'Failed to delete address.')
+      }
+      await fetchAddresses()
+    } catch (err: any) {
+      console.error(err)
+      throw err
+    }
   }
 
-  const updateAddress = (id: string, updatedFields: Partial<Address>) => {
-    setAddresses((prev) => {
-      let next = prev.map((a) => (a.id === id ? { ...a, ...updatedFields } : a))
-      if (updatedFields.isDefault) {
-        next = next.map((a) => (a.id === id ? a : { ...a, isDefault: false }))
+  const updateAddress = async (id: string, updatedFields: Partial<Address>) => {
+    try {
+      const res = await authFetch(`/api/addresses/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedFields)
+      })
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}))
+        throw new Error(errJson.error || 'Failed to update address.')
       }
-      return next
-    })
+      await fetchAddresses()
+    } catch (err: any) {
+      console.error(err)
+      throw err
+    }
   }
 
   return (

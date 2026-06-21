@@ -6,6 +6,7 @@ export const Products: React.FC = () => {
   const {
     products,
     categories,
+    brands,
     addProduct,
     updateProduct,
     deleteProduct,
@@ -55,7 +56,7 @@ export const Products: React.FC = () => {
     setTitle('')
     setDescription('')
     setCategory(categories[0] || 'Educational')
-    setBrand('')
+    setBrand(brands[0] || 'Forest Minds')
     setAgeGroup('3-5 years')
     setPrice('')
     setDiscountPrice('')
@@ -506,13 +507,15 @@ export const Products: React.FC = () => {
                 {/* Brand */}
                 <div className="space-y-1">
                   <label className="block text-[10px] font-semibold text-ink-muted uppercase">Brand</label>
-                  <input
-                    type="text"
+                  <select
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
-                    placeholder="e.g. Oak & Elm"
-                    className="w-full px-2.5 py-1.5 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary"
-                  />
+                    className="w-full px-2 py-1.5 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary cursor-pointer text-ink font-medium"
+                  >
+                    {brands.map(b => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Age Group */}

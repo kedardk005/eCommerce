@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import type { Address } from '../context/AuthContext'
 import PageContainer from '../components/PageContainer'
 import BadgeTag from '../components/BadgeTag'
 
 export const Profile: React.FC = () => {
-  const { user, addresses, addAddress, removeAddress, updateAddress, login } = useAuth()
+  const { user, addresses, addAddress, removeAddress, updateAddress, login, authFetch } = useAuth()
 
   // 1. Personal Info Forms state
-  const [name, setName] = useState(user?.name || 'Guest Toy Lover')
-  const [email, setEmail] = useState(user?.email || 'guest@toycabin.com')
-  const [phone, setPhone] = useState('9876543210')
+  const [name, setName] = useState(user?.name || '')
+  const [email, setEmail] = useState(user?.email || '')
+  const [phone, setPhone] = useState('')
   const [infoSuccess, setInfoSuccess] = useState('')
   const [isInfoSubmitting, setIsInfoSubmitting] = useState(false)
   const [infoError, setInfoError] = useState<string | null>(null)
@@ -44,19 +44,55 @@ export const Profile: React.FC = () => {
   const [isPrefSubmitting, setIsPrefSubmitting] = useState(false)
   const [prefError, setPrefError] = useState<string | null>(null)
 
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        const profileRes = await authFetch('/api/profile')
+        if (profileRes.ok) {
+          const profileData = await profileRes.json()
+          setName(profileData.name || '')
+          setEmail(profileData.email || '')
+          setPhone(profileData.phone || '')
+          if (profileData.name !== user?.name || profileData.email !== user?.email) {
+            login({ id: profileData.id, name: profileData.name, email: profileData.email, role: profileData.role })
+          }
+        }
+        
+        const prefsRes = await authFetch('/api/profile/notifications')
+        if (prefsRes.ok) {
+          const prefsData = await prefsRes.json()
+          setEmailPref(!!prefsData.email)
+          setSmsPref(!!prefsData.sms)
+          setWhatsAppPref(!!prefsData.whatsapp)
+        }
+      } catch (err) {
+        console.error('[Profile] Failed to load profile and preferences:', err)
+      }
+    }
+    loadProfileData()
+  }, [])
+
   const handleInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setInfoError(null)
     setInfoSuccess('')
-    if (!name || !email) {
-      setInfoError('Please fill out Name and Email.')
+    if (!name) {
+      setInfoError('Please fill out Name.')
       return
     }
     setIsInfoSubmitting(true)
     try {
-      await new Promise((r) => setTimeout(r, 600))
-      // Update simulated context user object
-      login({ name, email })
+      const res = await authFetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Failed to update profile details.')
+      }
+      const data = await res.json()
+      login({ id: data.id, name: data.name, email: data.email, role: data.role })
       setInfoSuccess('Profile details updated successfully!')
       setTimeout(() => setInfoSuccess(''), 4000)
     } catch (err: any) {
@@ -84,7 +120,18 @@ export const Profile: React.FC = () => {
     }
     setIsPasswordSubmitting(true)
     try {
-      await new Promise((r) => setTimeout(r, 600))
+      const res = await authFetch('/api/profile/password', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: oldPassword,
+          newPassword
+        })
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Failed to update password.')
+      }
       setPasswordSuccess('Password changed successfully!')
       setOldPassword('')
       setNewPassword('')
@@ -108,7 +155,7 @@ export const Profile: React.FC = () => {
     setIsAddressSubmitting(true)
     try {
       if (editingAddressId) {
-        updateAddress(editingAddressId, {
+        await updateAddress(editingAddressId, {
           line1,
           line2,
           city,
@@ -165,7 +212,21 @@ export const Profile: React.FC = () => {
     setPrefSuccess('')
     setIsPrefSubmitting(true)
     try {
-      await new Promise((r) => setTimeout(r, 600))
+      const res = await authFetch('/api/profile/notifications', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: emailPref,
+          sms: smsPref,
+          whatsapp: whatsAppPref
+        })
+      })
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Failed to save preferences.')
+      }
       setPrefSuccess('Notification preferences updated successfully!')
       setTimeout(() => setPrefSuccess(''), 4000)
     } catch (err: any) {

@@ -14,6 +14,7 @@ export const OrderDetail: React.FC = () => {
   const [newStatus, setNewStatus] = useState<AdminOrder['status']>('Placed')
   const [statusNote, setStatusNote] = useState('')
   const [showNoteInput, setShowNoteInput] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Invoice toast state
   const [invoiceToast, setInvoiceToast] = useState(false)
@@ -48,13 +49,28 @@ export const OrderDetail: React.FC = () => {
     )
   }
 
-  const handleStatusUpdate = (e: React.FormEvent) => {
+  const handleStatusUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     if (id) {
-      updateOrderStatus(id, newStatus, statusNote.trim() || `Status updated to ${newStatus}.`)
-      setStatusNote('')
-      setShowNoteInput(false)
+      try {
+        setError(null)
+        await updateOrderStatus(id, newStatus, statusNote.trim() || `Status updated to ${newStatus}.`)
+        setStatusNote('')
+        setShowNoteInput(false)
+      } catch (err: any) {
+        setError(err.message || 'Failed to update order status.')
+      }
     }
+  }
+
+  const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+    'Placed': ['Placed', 'Confirmed', 'Cancelled'],
+    'Confirmed': ['Confirmed', 'Packed', 'Cancelled'],
+    'Packed': ['Packed', 'Shipped', 'Cancelled'],
+    'Shipped': ['Shipped', 'Out for Delivery', 'Cancelled'],
+    'Out for Delivery': ['Out for Delivery', 'Delivered', 'Cancelled'],
+    'Delivered': ['Delivered'],
+    'Cancelled': ['Cancelled']
   }
 
   // Format currency
@@ -195,6 +211,12 @@ export const OrderDetail: React.FC = () => {
           <div className="bg-surface border border-border p-4 rounded shadow-sm">
             <h3 className="text-xs font-heading font-bold text-ink mb-3">Order Status Controller</h3>
             
+            {error && (
+              <div className="mb-3 bg-primary/10 border border-primary/20 p-2.5 rounded text-primary text-xs font-semibold">
+                {error}
+              </div>
+            )}
+            
             <form onSubmit={handleStatusUpdate} className="space-y-3">
               <div>
                 <label className="block text-[10px] font-semibold text-ink-muted uppercase">Update State</label>
@@ -206,13 +228,14 @@ export const OrderDetail: React.FC = () => {
                   }}
                   className="w-full mt-1 px-2.5 py-1.5 bg-bg border border-border rounded text-xs focus:outline-none focus:border-primary cursor-pointer text-ink font-medium"
                 >
-                  <option value="Placed">Placed</option>
-                  <option value="Confirmed">Confirmed</option>
-                  <option value="Packed">Packed</option>
-                  <option value="Shipped">Shipped</option>
-                  <option value="Out for Delivery">Out for Delivery</option>
-                  <option value="Delivered">Delivered</option>
-                  <option value="Cancelled">Cancelled</option>
+                  {Object.keys(ALLOWED_TRANSITIONS).map(statusKey => {
+                    const isAllowed = ALLOWED_TRANSITIONS[order.status]?.includes(statusKey)
+                    return (
+                      <option key={statusKey} value={statusKey} disabled={!isAllowed}>
+                        {statusKey} {!isAllowed ? '(Invalid transition)' : ''}
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
 

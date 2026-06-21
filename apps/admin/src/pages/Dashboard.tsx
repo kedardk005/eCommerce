@@ -15,7 +15,8 @@ export const Dashboard: React.FC = () => {
 
   // 1. Calculate live KPIs
   const ordersTodayList = useMemo(() => {
-    return orders.filter(o => o.date === '2026-06-15')
+    const todayStr = new Date().toISOString().substring(0, 10)
+    return orders.filter(o => o.date === todayStr)
   }, [orders])
 
   const ordersTodayCount = ordersTodayList.length

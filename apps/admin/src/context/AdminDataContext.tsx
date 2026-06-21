@@ -195,6 +195,7 @@ export interface FinanceTransaction {
 interface AdminDataContextType {
   products: AdminProduct[]
   categories: string[]
+  brands: string[]
   orders: AdminOrder[]
   returns: AdminReturnRequest[]
   activityLogs: ActivityLogEntry[]
@@ -375,6 +376,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [products, setProducts] = useState<AdminProduct[]>([])
   const [categories, setCategories] = useState<string[]>([])
+  const [brands, setBrands] = useState<string[]>([])
   const [rawCategories, setRawCategories] = useState<any[]>([])
   const [rawBrands, setRawBrands] = useState<any[]>([])
   const [orders, setOrders] = useState<AdminOrder[]>([])
@@ -429,6 +431,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (brandRes.ok) {
         const brs = await brandRes.json()
         setRawBrands(brs)
+        setBrands(brs.map((b: any) => b.name))
       }
     } catch (err) {
       console.error('Failed to fetch categories/brands:', err)
@@ -1095,6 +1098,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setOrders([])
       setProducts([])
       setCategories([])
+      setBrands([])
       setCoupons([])
       setReturns([])
       setTickets([])
@@ -1579,6 +1583,7 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       value={{
         products,
         categories,
+        brands,
         orders,
         returns,
         activityLogs,
