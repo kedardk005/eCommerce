@@ -126,6 +126,49 @@
     opacity: 0.6;
   }
 
+  /* Playful child-friendly animations & shadows */
+  @keyframes bounceSubtle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-2deg);
+    }
+    75% {
+      transform: rotate(2deg);
+    }
+  }
+
+  .hover-bounce-subtle:hover {
+    animation: bounceSubtle 0.6s ease-in-out infinite;
+  }
+
+  .hover-wiggle:hover {
+    animation: wiggle 0.4s ease-in-out infinite;
+  }
+
+  .shadow-playful {
+    box-shadow: 0 8px 0px rgba(47, 47, 74, 0.06), 0 15px 25px -5px rgba(47, 47, 74, 0.04);
+  }
+
+  .shadow-playful-hover {
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+  }
+
+  .shadow-playful-hover:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 12px 0px rgba(255, 92, 77, 0.12), 0 20px 30px -5px rgba(47, 47, 74, 0.08);
+  }
+
   /* 9. Motion accessibility safety checks */
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-in {
@@ -137,9 +180,13 @@
     .btn-primary:hover,
     .btn-primary:active,
     .btn-pill-dark,
-    .btn-pill-dark:hover {
+    .btn-pill-dark:hover,
+    .hover-bounce-subtle:hover,
+    .hover-wiggle:hover,
+    .shadow-playful-hover:hover {
       transform: none !important;
       box-shadow: none !important;
+      animation: none !important;
     }
     .hover\:scale-105:hover,
     .group:hover .group-hover\:scale-105,
@@ -153,3 +200,4 @@
     }
   }
 }
+

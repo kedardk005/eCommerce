@@ -547,3 +547,13 @@ model Settings {
   onlineToggle      Boolean  @default(true)
   updatedAt         DateTime @updatedAt
 }
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}
+

@@ -15,18 +15,17 @@ export const Contact: React.FC = () => {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate sending support request
     try {
-      const res = await fetch('/api/support/tickets', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          // Optionally include token if logged in
-          ...(localStorage.getItem('accessToken') ? { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` } : {})
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          subject: formData.subject || 'Store Query',
-          message: `From: ${formData.name} <${formData.email}>\n\n${formData.message}`
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
         })
       })
 
@@ -34,14 +33,11 @@ export const Contact: React.FC = () => {
         setFormSubmitted(true)
         setFormData({ name: '', email: '', subject: '', message: '' })
       } else {
-        // Fallback to local success if backend endpoint is gated/unauthorized
-        setFormSubmitted(true)
-        setFormData({ name: '', email: '', subject: '', message: '' })
+        const errData = await res.json().catch(() => ({}))
+        alert(errData.error || 'Failed to send message. Please try again.')
       }
     } catch (err) {
-      // Offline fallback
-      setFormSubmitted(true)
-      setFormData({ name: '', email: '', subject: '', message: '' })
+      alert('Network error. Failed to connect to server.')
     } finally {
       setLoading(false)
     }

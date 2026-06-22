@@ -7,12 +7,10 @@ import {
   ProductsIcon,
   InventoryIcon,
   ReturnsIcon,
-  CustomersIcon,
   SupportIcon,
   MarketingIcon,
   FinanceIcon,
   CMSIcon,
-  RolesIcon,
   SettingsIcon,
   SearchIcon,
   BellIcon,
@@ -40,6 +38,44 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [showNotifications, setShowNotifications] = useState(false)
+
+  interface NotificationItem {
+    id: string
+    type: 'LOW_STOCK' | 'NEW_ORDER' | 'NEW_TICKET'
+    title: string
+    message: string
+    createdAt: string
+    targetUrl: string
+  }
+
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await fetch('/api/admin/notifications', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('admin_accessToken')}`
+        }
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const items = data.items || []
+        setNotifications(items)
+        setUnreadCount(Math.min(items.length, 5))
+      }
+    } catch (err) {
+      console.error('Error fetching admin notifications:', err)
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem('admin_accessToken')) {
+      fetchNotifications()
+      const interval = setInterval(fetchNotifications, 30000)
+      return () => clearInterval(interval)
+    }
+  }, [location.pathname])
 
   // Listen to the URL search parameter for role restriction errors
   useEffect(() => {
@@ -88,12 +124,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     { name: 'Products', path: '/products', icon: ProductsIcon },
     { name: 'Inventory', path: '/inventory', icon: InventoryIcon },
     { name: 'Returns/Refunds', path: '/returns', icon: ReturnsIcon },
-    { name: 'Customers', path: '/customers', icon: CustomersIcon },
     { name: 'Support Tickets', path: '/support', icon: SupportIcon },
+    { name: 'Contact Messages', path: '/contact-messages', icon: SupportIcon },
     { name: 'Marketing', path: '/marketing', icon: MarketingIcon },
     { name: 'Accounts/Finance', path: '/finance', icon: FinanceIcon },
     { name: 'CMS', path: '/cms', icon: CMSIcon },
-    { name: 'Roles & Accounts', path: '/accounts', icon: RolesIcon, ownerOnly: true },
     { name: 'Settings', path: '/settings', icon: SettingsIcon },
   ]
 
@@ -236,40 +271,58 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             {/* Notification Bell */}
             <div className="relative">
               <button
-                onClick={() => setShowNotifications(!showNotifications)}
+                onClick={() => {
+                  setShowNotifications(!showNotifications)
+                  if (!showNotifications) {
+                    setUnreadCount(0)
+                  }
+                }}
                 className="text-ink-muted hover:text-ink p-1.5 rounded-full hover:bg-bg relative"
               >
                 <BellIcon className="h-5 w-5" />
-                <span className="absolute top-1 right-1.5 bg-accent-yellow text-ink font-heading font-extrabold text-[9px] h-4 w-4 rounded-full flex items-center justify-center border border-surface">
-                  3
-                </span>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1.5 bg-accent-yellow text-ink font-heading font-extrabold text-[9px] h-4 w-4 rounded-full flex items-center justify-center border border-surface">
+                    {unreadCount}
+                  </span>
+                )}
               </button>
 
-              {/* Mock Notifications Dropdown */}
+              {/* Dynamic Notifications Dropdown */}
               {showNotifications && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
                   <div className="absolute right-0 mt-2 w-72 bg-surface border border-border rounded shadow-lg py-2 z-50 text-xs animate-fade-in-up">
                     <div className="px-3 py-1.5 border-b border-border font-heading font-bold text-ink flex justify-between items-center">
                       <span>Notifications</span>
-                      <span className="text-[10px] text-accent-yellow bg-secondary px-1.5 py-0.5 rounded font-normal">3 New</span>
+                      {notifications.length > 0 && (
+                        <span className="text-[10px] text-accent-yellow bg-secondary px-1.5 py-0.5 rounded font-normal">
+                          {notifications.length} Alerts
+                        </span>
+                      )}
                     </div>
-                    <div className="max-h-60 overflow-y-auto">
-                      <div className="px-3 py-2 border-b border-border hover:bg-bg transition-colors cursor-pointer">
-                        <p className="font-semibold text-ink">⚠️ Low Stock Alert</p>
-                        <p className="text-[10px] text-ink-muted">Safari Animals Puzzle is out of stock.</p>
-                        <span className="text-[9px] text-ink-muted">5 mins ago</span>
-                      </div>
-                      <div className="px-3 py-2 border-b border-border hover:bg-bg transition-colors cursor-pointer">
-                        <p className="font-semibold text-ink">📦 New Order #ORD-9025</p>
-                        <p className="text-[10px] text-ink-muted">Emily Stone placed an order ($104.97)</p>
-                        <span className="text-[9px] text-ink-muted">15 mins ago</span>
-                      </div>
-                      <div className="px-3 py-2 hover:bg-bg transition-colors cursor-pointer">
-                        <p className="font-semibold text-ink">💬 Support Ticket #TCK-408</p>
-                        <p className="text-[10px] text-ink-muted">New reply message from customer.</p>
-                        <span className="text-[9px] text-ink-muted">2 hours ago</span>
-                      </div>
+                    <div className="max-h-60 overflow-y-auto divide-y divide-border/60">
+                      {notifications.length > 0 ? (
+                        notifications.map((notif) => (
+                          <div
+                            key={notif.id}
+                            onClick={() => {
+                              setShowNotifications(false)
+                              navigate(notif.targetUrl)
+                            }}
+                            className="px-3 py-2 hover:bg-bg transition-colors cursor-pointer text-left"
+                          >
+                            <p className="font-semibold text-ink">{notif.title}</p>
+                            <p className="text-[10px] text-ink-muted mt-0.5">{notif.message}</p>
+                            <span className="text-[9px] text-ink-muted/80 block mt-1">
+                              {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-3 py-6 text-center text-ink-muted italic">
+                          No notifications at the moment.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </>

@@ -50,6 +50,8 @@ import financeRouter from './routes/finance.routes'
 import accountsRouter, { setPasswordHandler } from './routes/account.routes'
 import activityLogRouter from './routes/activityLog.routes'
 import profileRouter from './routes/profile.routes'
+import contactRouter from './routes/contact.routes'
+import adminNotificationRouter from './routes/adminNotification.routes'
 import { globalApiLimiter, adminApiLimiter } from './middleware/auth.middleware'
 
 const app = express()
@@ -107,6 +109,8 @@ app.use('/api/admin/finance', financeRouter)
 app.use('/api/admin/accounts', accountsRouter)
 app.use('/api/admin/activity-logs', activityLogRouter)
 app.use('/api', profileRouter)
+app.use('/api', contactRouter)
+app.use('/api/admin/notifications', adminNotificationRouter)
 app.post('/api/auth/set-password', setPasswordHandler)
 
 

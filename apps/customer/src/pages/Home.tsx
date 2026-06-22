@@ -310,9 +310,10 @@ interface ProductCardProps {
     stockStatus: string
     image?: string
   }
+  badge?: string
 }
 
-const EditorialProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const EditorialProductCard: React.FC<ProductCardProps> = ({ product, badge }) => {
   return (
     <Link
       to={`/products/${product.slug}`}
@@ -337,6 +338,11 @@ const EditorialProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Minimal text tags — replace heavy pills */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+          {badge && (
+            <span className="font-heading font-bold text-[10px] uppercase tracking-wider text-white bg-primary px-2 py-0.5 rounded shadow-sm">
+              {badge}
+            </span>
+          )}
           {product.discountPrice < product.price && (
             <span className="font-heading font-bold text-[10px] uppercase tracking-wider text-primary bg-white/90 px-2 py-0.5 rounded">
               Sale
@@ -383,11 +389,220 @@ const EditorialProductCard: React.FC<ProductCardProps> = ({ product }) => {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// SHOP BY AGE — playful stages
+// ─────────────────────────────────────────────────────────────────
+const ShopByAgeSection: React.FC = () => {
+  const ages = [
+    { range: '0-1 years', label: 'Baby', emoji: '👶', bg: 'bg-[#FFF0EF]', border: 'border-[#FFD5D2]', text: 'text-[#FF5C4D]' },
+    { range: '1-3 years', label: 'Toddler', emoji: '🧸', bg: 'bg-[#FFF9EB]', border: 'border-[#FFE9C2]', text: 'text-[#FFB01F]' },
+    { range: '3-5 years', label: 'Preschool', emoji: '🧩', bg: 'bg-[#EBFDF5]', border: 'border-[#C3F4DE]', text: 'text-[#2BBBA0]' },
+    { range: '5-7 years', label: 'Explorer', emoji: '🚗', bg: 'bg-[#EBF5FF]', border: 'border-[#C2E0FF]', text: 'text-[#4D8DFF]' },
+    { range: '8+ years', label: 'Creative', emoji: '🧠', bg: 'bg-[#FAF0FF]', border: 'border-[#EED4FF]', text: 'text-[#B85CFF]' }
+  ]
+
+  return (
+    <section className="w-full bg-white border-b border-border" aria-label="Shop by age">
+      <div className="section-inner py-16 md:py-20 text-center space-y-10">
+        <div className="space-y-3">
+          <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
+            Age Finder
+          </span>
+          <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', lineHeight: 1.15 }}>
+            Shop by Age
+          </h2>
+          <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
+            Find the perfect developmental wooden toy to inspire your child's milestones.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+          {ages.map((item) => (
+            <Link
+              key={item.range}
+              to={`/products?ageGroup=${encodeURIComponent(item.range)}`}
+              className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 ${item.bg} ${item.border} hover-bounce-subtle shadow-playful transition duration-300`}
+            >
+              <span className="text-5xl mb-3 filter drop-shadow-sm select-none">{item.emoji}</span>
+              <span className={`font-heading font-bold text-lg ${item.text}`}>{item.label}</span>
+              <span className="font-body text-xs text-ink-muted font-medium mt-1">{item.range}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// WHY US?! — brand play values
+// ─────────────────────────────────────────────────────────────────
+const WhyUsSection: React.FC = () => {
+  const benefits = [
+    {
+      title: '100% Sustainable Wood',
+      desc: 'Sourced from certified, renewable forests. Gorgeous, natural beechwood and maple grains.',
+      emoji: '🌲',
+      borderColor: 'border-[#FF5C4D]', // primary
+      shadowColor: 'hover:shadow-[#FF5C4D]/10'
+    },
+    {
+      title: 'Child-Safe & Non-Toxic',
+      desc: 'Finished with organic linseed oil and water-based paints. Safe for curious little teeth.',
+      emoji: '🎨',
+      borderColor: 'border-[#4D8DFF]', // accent blue
+      shadowColor: 'hover:shadow-[#4D8DFF]/10'
+    },
+    {
+      title: 'Handmade to Outlast',
+      desc: 'Crafted by master artisans with soft rounded edges. Made to survive generations of play.',
+      emoji: '🔨',
+      borderColor: 'border-[#FFC53D]', // accent yellow
+      shadowColor: 'hover:shadow-[#FFC53D]/10'
+    },
+    {
+      title: 'Plastic-Free Shipping',
+      desc: 'We pack and ship exclusively with biodegradable, recycled materials to protect their future.',
+      emoji: '📦',
+      borderColor: 'border-[#2BBBA0]', // accent teal
+      shadowColor: 'hover:shadow-[#2BBBA0]/10'
+    }
+  ]
+
+  return (
+    <section className="w-full bg-white border-b border-border" aria-label="Why Choose Us">
+      <div className="section-inner py-20 md:py-24 text-center space-y-12">
+        <div className="space-y-3">
+          <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
+            Our Play Values
+          </span>
+          <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', lineHeight: 1.15 }}>
+            Why Us?!
+          </h2>
+          <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
+            We believe toys should trigger creativity, not clutter. Safe materials, safe planet, happy families.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+          {benefits.map((item) => (
+            <div
+              key={item.title}
+              className={`bg-surface p-6 rounded-2xl border border-border border-b-4 ${item.borderColor} shadow-playful shadow-playful-hover transition-all duration-300`}
+            >
+              <div className="w-12 h-12 rounded-xl bg-bg flex items-center justify-center text-2xl mb-4 select-none">
+                {item.emoji}
+              </div>
+              <h3 className="font-heading font-bold text-lg text-ink mb-2">
+                {item.title}
+              </h3>
+              <p className="font-body text-sm text-ink-muted leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// CUSTOMER TESTIMONIALS
+// ─────────────────────────────────────────────────────────────────
+const ReviewsSection: React.FC = () => {
+  const reviews = [
+    {
+      name: 'Emily S.',
+      role: 'Verified Parent',
+      text: 'The craftsmanship is absolutely beautiful. The train set has no sharp edges, smells of real forest pine, and has survived several drops. Truly heirloom quality!',
+      rating: 5
+    },
+    {
+      name: 'Jane D.',
+      role: 'Verified Parent',
+      text: 'It is so hard to find plastic-free toys that actually keep kids engaged. The nesting blocks are brilliant and the colors are gorgeous. Highly recommend!',
+      rating: 5
+    },
+    {
+      name: 'Alice W.',
+      role: 'Verified Parent',
+      text: 'Super fast shipping, beautiful eco-friendly packaging, and my teething daughter loves chewing on the cherrywood duck. 100% safe and trusted.',
+      rating: 5
+    }
+  ]
+
+  return (
+    <section className="w-full bg-bg border-b border-border" aria-label="Customer Reviews">
+      <div className="section-inner py-20 md:py-24 text-center space-y-12">
+        <div className="space-y-3">
+          <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
+            Parent Feedback
+          </span>
+          <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', lineHeight: 1.15 }}>
+            Loved by parents &amp; kids
+          </h2>
+          <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
+            Hear from families who brought our sustainable wooden toys into their playroom.
+          </p>
+        </div>
+
+        {/* Global score */}
+        <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white px-8 py-5 rounded-2xl border border-border shadow-playful">
+          <div className="flex items-center gap-1.5">
+            <span className="text-3xl font-heading font-extrabold text-ink">4.9</span>
+            <span className="text-3xl font-heading font-extrabold text-accent-yellow">★</span>
+          </div>
+          <div className="w-px h-6 bg-border hidden sm:block" />
+          <div className="text-left">
+            <p className="font-heading font-bold text-sm text-ink">Excellent Overall Rating</p>
+            <p className="font-body text-xs text-ink-muted mt-0.5">Based on 10,000+ happy parent reviews</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          {reviews.map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-white p-7 rounded-2xl border border-border shadow-playful relative flex flex-col justify-between"
+            >
+              <div className="space-y-4">
+                {/* Rating */}
+                <div className="flex text-accent-yellow text-base">
+                  {Array.from({ length: item.rating }).map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+                {/* Text */}
+                <p className="font-body text-sm text-ink leading-relaxed italic relative z-10">
+                  “{item.text}”
+                </p>
+              </div>
+
+              {/* Author */}
+              <div className="flex items-center gap-3 pt-6 mt-6 border-t border-border/50">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-heading font-bold text-sm text-primary uppercase select-none">
+                  {item.name.substring(0, 2)}
+                </div>
+                <div>
+                  <h4 className="font-heading font-semibold text-sm text-ink">{item.name}</h4>
+                  <p className="font-body text-[11px] text-accent-teal font-semibold">{item.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
 // HOME PAGE — main component
 // ─────────────────────────────────────────────────────────────────
 export const Home: React.FC = () => {
   const [categories, setCategories] = useState<string[]>([])
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([])
+  const [bestsellerProducts, setBestsellerProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -395,46 +610,55 @@ export const Home: React.FC = () => {
     setLoading(true)
     setError(null)
     try {
-      const [catRes, prodRes] = await Promise.all([
+      const [catRes, featRes, bestRes] = await Promise.all([
         fetch('/api/categories'),
+        fetch('/api/products?limit=4&sort=newest'),
         fetch('/api/products?limit=4&sort=rating')
       ])
+
       if (catRes.ok) {
         const cats = await catRes.json()
         setCategories(cats.map((c: any) => c.name))
       }
-      if (prodRes.ok) {
-        const prodData = await prodRes.json()
-        const formatted = (prodData.items || prodData.data || []).map((p: any) => {
-          const defaultVar = p.variants?.[0] || { stock: 0 }
-          return {
-            id: p.id,
-            title: p.title,
-            slug: p.slug,
-            description: p.description,
-            price: p.basePrice / 100,
-            discountPrice: (p.discountPrice ?? p.basePrice) / 100,
-            brand: p.brand?.name || 'Handcrafted',
-            category: p.category?.name || 'Toys',
-            ageGroup: p.ageGroup,
-            rating: p.rating,
-            stockStatus: defaultVar.stock > 0 ? 'In Stock' : 'Out of Stock',
-            variants: p.variants ? p.variants.map((v: any) => ({
-              name: v.attributes?.name || v.name || 'Standard',
-              stock: v.stock
-            })) : [],
-            reviews: [],
-            imageColor: 'bg-primary',
-            image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
-            images: p.images ? p.images.map((img: any) => ({
-              id: img.id,
-              r2Key: img.r2Key,
-              url: img.url,
-              position: img.position
-            })) : []
-          }
-        })
-        setFeaturedProducts(formatted)
+
+      const formatProduct = (p: any) => {
+        const defaultVar = p.variants?.[0] || { stock: 0 }
+        return {
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          description: p.description,
+          price: p.basePrice / 100,
+          discountPrice: (p.discountPrice ?? p.basePrice) / 100,
+          brand: p.brand?.name || 'Handcrafted',
+          category: p.category?.name || 'Toys',
+          ageGroup: p.ageGroup,
+          rating: p.rating,
+          stockStatus: defaultVar.stock > 0 ? 'In Stock' : 'Out of Stock',
+          variants: p.variants ? p.variants.map((v: any) => ({
+            name: v.attributes?.name || v.name || 'Standard',
+            stock: v.stock
+          })) : [],
+          reviews: [],
+          imageColor: 'bg-primary',
+          image: p.images && p.images.length > 0 ? p.images[0].url : undefined,
+          images: p.images ? p.images.map((img: any) => ({
+            id: img.id,
+            r2Key: img.r2Key,
+            url: img.url,
+            position: img.position
+          })) : []
+        }
+      }
+
+      if (featRes.ok) {
+        const featData = await featRes.json()
+        setFeaturedProducts((featData.items || featData.data || []).map(formatProduct))
+      }
+
+      if (bestRes.ok) {
+        const bestData = await bestRes.json()
+        setBestsellerProducts((bestData.items || bestData.data || []).map(formatProduct))
       }
     } catch (err) {
       console.error('Failed to load home page data:', err)
@@ -482,27 +706,30 @@ export const Home: React.FC = () => {
           {/* ── 2. CATEGORY STRIP ── */}
           <CategoryStrip categories={categories} />
 
-          {/* ── 3. FEATURED COLLECTION SECTION (Combined) ── */}
+          {/* ── 3. SHOP BY AGE SECTION ── */}
+          <ShopByAgeSection />
+
+          {/* ── 4. FEATURED COLLECTION SECTION (Newest arrivals) ── */}
           {featuredProducts.length > 0 && (
-            <section className="w-full bg-bg" aria-label="Featured collection">
+            <section className="w-full bg-bg border-b border-border" aria-label="Featured collection">
               <div className="section-inner py-20 md:py-24 text-center space-y-12">
                 {/* Heading details */}
                 <div className="space-y-4">
                   <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
-                    Staff Favourites
+                    New Arrivals
                   </span>
                   <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}>
                     Featured Collection
                   </h2>
                   <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
-                    Our highest-rated, organic wood masterpieces — handpicked by our team this season.
+                    Our freshest handcrafted wooden playthings, fresh out of the workshop.
                   </p>
                 </div>
 
                 {/* Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
                   {featuredProducts.map((product) => (
-                    <EditorialProductCard key={product.id} product={product} />
+                    <EditorialProductCard key={product.id} product={product} badge="New" />
                   ))}
                 </div>
 
@@ -525,8 +752,41 @@ export const Home: React.FC = () => {
             </section>
           )}
 
-          {/* ── 4. CURATED WITH CARE ── */}
+          {/* ── 5. BESTSELLERS SECTION ── */}
+          {bestsellerProducts.length > 0 && (
+            <section className="w-full bg-bg border-b border-border" aria-label="Bestsellers collection">
+              <div className="section-inner py-20 md:py-24 text-center space-y-12">
+                {/* Heading details */}
+                <div className="space-y-4">
+                  <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-accent-teal block">
+                    🔥 Highly Rated
+                  </span>
+                  <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}>
+                    Bestsellers
+                  </h2>
+                  <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
+                    Our most-loved, organic creations that keep little hands busy and playrooms happy.
+                  </p>
+                </div>
+
+                {/* Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+                  {bestsellerProducts.map((product) => (
+                    <EditorialProductCard key={product.id} product={product} badge="Bestseller" />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── 6. CURATED WITH CARE ── */}
           <CuratedSection />
+
+          {/* ── 7. WHY US?! SECTION ── */}
+          <WhyUsSection />
+
+          {/* ── 8. OVERALL REVIEWS FROM CUSTOMERS SECTION ── */}
+          <ReviewsSection />
 
           {/* ── PROMO STRIP (retained from original, minimal restyle) ── */}
           <section className="w-full bg-secondary" aria-label="Promotion">

@@ -953,10 +953,13 @@ router.patch(
           }
         }
       } else {
+        const isDelivered = data.status === OrderStatus.delivered
+        
         updatedOrder = await prisma.order.update({
           where: { id },
           data: {
             orderStatus: data.status,
+            ...(isDelivered ? { paymentStatus: PaymentStatus.paid } : {}),
             statusHistory: {
               create: {
                 status: data.status,
@@ -983,6 +986,36 @@ router.patch(
             returns: true
           }
         })
+
+        if (isDelivered) {
+          await prisma.payment.updateMany({
+            where: { orderId: id, status: PaymentStatus.pending },
+            data: { status: PaymentStatus.paid }
+          })
+          
+          // Re-fetch to include the updated payments in the response
+          updatedOrder = await prisma.order.findUnique({
+            where: { id },
+            include: {
+              user: { select: { name: true, email: true, phone: true } },
+              items: {
+                include: {
+                  productVariant: {
+                    include: {
+                      product: true
+                    }
+                  }
+                }
+              },
+              statusHistory: {
+                orderBy: { createdAt: 'desc' }
+              },
+              payments: true,
+              shipments: true,
+              returns: true
+            }
+          })
+        }
       }
 
       // Trigger status transition notifications
@@ -1223,10 +1256,12 @@ router.post('/shiprocket/webhook', async (req, res) => {
 
     // Update Order & Shipment
     await prisma.$transaction(async (tx) => {
+      const isDelivered = targetStatus === OrderStatus.delivered
       await tx.order.update({
         where: { id: order.id },
         data: {
           orderStatus: targetStatus!,
+          ...(isDelivered ? { paymentStatus: PaymentStatus.paid } : {}),
           statusHistory: {
             create: {
               status: targetStatus!,
@@ -1235,6 +1270,13 @@ router.post('/shiprocket/webhook', async (req, res) => {
           }
         }
       })
+
+      if (isDelivered) {
+        await tx.payment.updateMany({
+          where: { orderId: order.id, status: PaymentStatus.pending },
+          data: { status: PaymentStatus.paid }
+        })
+      }
 
       await tx.shipment.update({
         where: { id: shipment.id },

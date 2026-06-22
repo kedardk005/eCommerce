@@ -20,9 +20,10 @@ export const Catalog: React.FC = () => {
   const [debouncedQuery, setDebouncedQuery] = useState('')
   
   const initialCategory = searchParams.get('category') || ''
+  const initialAgeGroup = searchParams.get('ageGroup') || ''
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [selectedBrand, setSelectedBrand] = useState('')
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState('')
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState(initialAgeGroup)
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [minRating, setMinRating] = useState(0)
@@ -61,10 +62,12 @@ export const Catalog: React.FC = () => {
     fetchMetadata()
   }, [])
 
-  // Listen to URL search param changes (e.g. from Home page category strip clicks)
+  // Listen to URL search param changes (e.g. from Home page category strip/age clicks)
   useEffect(() => {
     const cat = searchParams.get('category') || ''
     setSelectedCategory(cat)
+    const age = searchParams.get('ageGroup') || ''
+    setSelectedAgeGroup(age)
   }, [searchParams])
 
   // Debounce search query

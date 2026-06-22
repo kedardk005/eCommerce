@@ -86,6 +86,9 @@ describe('Toy Cabin Integration Tests', () => {
         await prisma.wishlist.delete({ where: { userId: testUserId } }).catch(() => {})
         await prisma.user.delete({ where: { id: testUserId } }).catch(() => {})
       }
+      await prisma.contactMessage.deleteMany({
+        where: { name: 'Automated Contact Tester' }
+      }).catch(() => {})
     } catch (err) {
       console.error('Error during cleanup:', err)
     } finally {
@@ -446,6 +449,71 @@ describe('Toy Cabin Integration Tests', () => {
       await prisma.cart.delete({ where: { userId: user2.id } }).catch(() => {})
       await prisma.wishlist.delete({ where: { userId: user2.id } }).catch(() => {})
       await prisma.user.delete({ where: { id: user2.id } }).catch(() => {})
+    }
+  })
+
+  // 6. Contact messages: submit publicly, retrieve as admin, delete as admin
+  test('Contact Messages API: Submit publicly -> Retrieve as Admin -> Delete as Admin', async () => {
+    // 1. Submit contact message publicly (unauthenticated)
+    const submitRes = await fetch(`${baseUrl}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Automated Contact Tester',
+        email: 'contact-test@example.com',
+        subject: 'Product Question',
+        message: 'Hello, this is a programmatic test query.'
+      })
+    })
+    assert.strictEqual(submitRes.status, 201, 'Public contact submission should return 201')
+    const submitData = await submitRes.json() as any
+    const createdMsgId = submitData.id
+    assert.ok(createdMsgId, 'Response should contain message ID')
+
+    // 2. Fetch contact messages as admin
+    const listRes = await fetch(`${baseUrl}/admin/contact-messages`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    })
+    assert.strictEqual(listRes.status, 200, 'Admin contact message list retrieval should succeed')
+    const listData = await listRes.json() as any
+    const foundMsg = listData.find((m: any) => m.id === createdMsgId)
+    assert.ok(foundMsg, 'Created contact message should be in retrieved admin list')
+    assert.strictEqual(foundMsg.name, 'Automated Contact Tester')
+
+    // 3. Delete contact message as admin
+    const deleteRes = await fetch(`${baseUrl}/admin/contact-messages/${createdMsgId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    })
+    assert.strictEqual(deleteRes.status, 200, 'Admin contact message delete should succeed')
+
+    // 4. Verify message no longer exists
+    const checkRes = await fetch(`${baseUrl}/admin/contact-messages`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    })
+    const checkData = await checkRes.json() as any
+    const exists = checkData.some((m: any) => m.id === createdMsgId)
+    assert.ok(!exists, 'Deleted contact message should not exist in list')
+  })
+
+  // 7. Admin Notifications: verify fetching alerts
+  test('Admin Notifications API: Fetch dynamic alerts', async () => {
+    const alertsRes = await fetch(`${baseUrl}/admin/notifications`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    })
+    assert.strictEqual(alertsRes.status, 200, 'Admin alerts retrieval should succeed')
+    const alertsData = await alertsRes.json() as any
+    assert.ok(Array.isArray(alertsData.items), 'Alerts should contain items array')
+    assert.ok(alertsData.total >= 0, 'Should return total counter')
+    
+    // Check elements format
+    if (alertsData.items.length > 0) {
+      const alert = alertsData.items[0]
+      assert.ok(alert.id, 'Alert should have id')
+      assert.ok(alert.type, 'Alert should have type')
+      assert.ok(alert.title, 'Alert should have title')
+      assert.ok(alert.message, 'Alert should have message')
+      assert.ok(alert.targetUrl, 'Alert should have targetUrl')
     }
   })
 })

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAdminAuth } from '../context/AdminAuthContext'
-import type { AdminRole } from '../context/AdminAuthContext'
 
 export const Login: React.FC = () => {
   const { login, isLoggedIn } = useAdminAuth()
@@ -10,7 +9,6 @@ export const Login: React.FC = () => {
 
   const [email, setEmail] = useState('admin@toycabin.com')
   const [password, setPassword] = useState('password123')
-  const [selectedRole, setSelectedRole] = useState<AdminRole>('sub_admin')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   // Get destination path from state (if redirected by RequireRole)
@@ -115,29 +113,7 @@ export const Login: React.FC = () => {
             />
           </div>
 
-          {/* Role selector dropdown (Temporary for testing) */}
-          <div className="space-y-1 text-left bg-primary/10 p-3 rounded border border-border/60">
-            <div className="flex justify-between items-center">
-              <label className="block text-xs font-semibold text-ink">
-                Testing Role Context
-              </label>
-              <span className="bg-accent-yellow text-ink text-[9px] font-heading font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider">
-                Demo helper
-              </span>
-            </div>
-            <select
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value as AdminRole)}
-              className="w-full mt-1.5 px-2.5 py-1.5 bg-surface border border-border rounded text-xs focus:outline-none focus:border-primary text-ink font-medium cursor-pointer"
-            >
-              <option value="super_owner">Super Owner (All access + Settings)</option>
-              <option value="sub_admin">Sub Admin (Operational views only)</option>
-            </select>
-            {/* Developer Notice */}
-            <p className="text-[10px] text-ink-muted leading-normal mt-2 italic">
-              * Note: This selector is temporary. It allows testing role-based rendering and route guards (Owner vs Staff access restriction) before real OAuth/database credentials are wired in.
-            </p>
-          </div>
+
 
           {/* Sign In Button */}
           <button

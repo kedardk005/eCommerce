@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AdminAuthProvider } from './context/AdminAuthContext'
 import { AdminDataProvider } from './context/AdminDataContext'
 import { RequireRole } from './components/RequireRole'
@@ -7,7 +7,6 @@ import { AppShell } from './components/AppShell'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { ActivityLog } from './pages/ActivityLog'
-import { Placeholder } from './pages/Placeholder'
 import { Products } from './pages/Products'
 import { Inventory } from './pages/Inventory'
 import { Orders } from './pages/Orders'
@@ -17,9 +16,9 @@ import { Marketing } from './pages/Marketing'
 import { Tickets } from './pages/Tickets'
 import { CMS } from './pages/CMS'
 import { Finance } from './pages/Finance'
-import { Accounts } from './pages/Accounts'
 import { Settings } from './pages/Settings'
 import { SetPassword } from './pages/SetPassword'
+import { ContactMessages } from './pages/ContactMessages'
 
 export const App: React.FC = () => {
   return (
@@ -103,25 +102,17 @@ export const App: React.FC = () => {
               }
             />
 
-            {/* Owner-Only Restrictive Guard */}
-            <Route
-              path="/accounts"
-              element={
-                <RequireRole allowedRoles={['super_owner']}>
-                  <AppShell>
-                    <Accounts />
-                  </AppShell>
-                </RequireRole>
-              }
-            />
+            {/* Disabled Owner-Only / Customer Modules Bounced to Dashboard */}
+            <Route path="/accounts" element={<Navigate to="/" replace />} />
+            <Route path="/customers" element={<Navigate to="/" replace />} />
 
-            {/* Standard Protected Side-nav Placeholders */}
+            {/* Customer Contact Messages */}
             <Route
-              path="/customers"
+              path="/contact-messages"
               element={
                 <RequireRole>
                   <AppShell>
-                    <Placeholder />
+                    <ContactMessages />
                   </AppShell>
                 </RequireRole>
               }
