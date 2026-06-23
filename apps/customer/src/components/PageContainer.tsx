@@ -8,7 +8,7 @@ interface PageContainerProps {
 
 export const PageContainer: React.FC<PageContainerProps> = ({ children, className = '' }) => {
   return (
-    <div className={`animate-fade-in w-full px-4 sm:px-6 py-6 sm:py-10 ${className}`}>
+    <div className={`animate-fade-in w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 ${className}`}>
       {children}
     </div>
   )

@@ -9,7 +9,7 @@ export const Orders: React.FC = () => {
   const { orders, loading, error, fetchOrders } = useOrders()
 
   const getStatusVariant = (status: string): 'red' | 'yellow' | 'green' | 'blue' | 'secondary' | 'default' => {
-    switch (status) {
+    switch ((status || '').toLowerCase().trim()) {
       case 'placed':
         return 'blue'
       case 'confirmed':
@@ -98,7 +98,7 @@ export const Orders: React.FC = () => {
                   </span>
                   <BadgeTag text={order.status} variant={getStatusVariant(order.status)} />
                 </div>
-                <div className="text-xs sm:text-sm font-body text-ink flex flex-wrap gap-x-6 gap-y-1">
+                <div className="text-xs sm:text-sm font-body text-ink flex flex-wrap items-center gap-x-6 gap-y-2.5">
                   <p>
                     <span className="text-ink-muted">Date:</span> <strong>{orderDate}</strong>
                   </p>
@@ -108,6 +108,10 @@ export const Orders: React.FC = () => {
                   <p>
                     <span className="text-ink-muted">Total:</span>{' '}
                     <strong className="text-primary">₹{order.total.toFixed(2)}</strong>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <span className="text-ink-muted">Status:</span>
+                    <BadgeTag text={order.status} variant={getStatusVariant(order.status)} className="scale-90 origin-left" />
                   </p>
                 </div>
               </div>

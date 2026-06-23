@@ -118,11 +118,12 @@ export const OrderDetail: React.FC = () => {
   // Horizontal tracker states definition
   const steps = ['placed', 'confirmed', 'packed', 'shipped', 'delivered']
   const getStepIndex = (status: string) => {
-    if (status === 'out for delivery') return 3 // map out for delivery near shipped
-    return steps.indexOf(status)
+    const cleanStatus = (status || '').toLowerCase().trim()
+    if (cleanStatus === 'out for delivery') return 3 // map out for delivery near shipped
+    return steps.indexOf(cleanStatus)
   }
   const currentStepIndex = getStepIndex(order.status)
-  const isCancelled = order.status === 'cancelled'
+  const isCancelled = (order.status || '').toLowerCase() === 'cancelled'
 
   const handleCancelOrder = async () => {
     if (window.confirm('Are you sure you want to cancel this order?')) {
@@ -320,10 +321,10 @@ export const OrderDetail: React.FC = () => {
         ) : (
           <div className="relative pt-6 pb-2 select-none">
             {/* Status bar line */}
-            <div className="absolute top-[34px] left-4 right-4 h-1 bg-border z-0 rounded-full" />
+            <div className="absolute top-[42px] left-[18px] right-[18px] h-1.5 bg-border/60 z-0 rounded-full" />
             <div
-              className="absolute top-[34px] left-4 h-1 bg-accent-teal z-0 rounded-full transition-all duration-300"
-              style={{ width: `${(Math.max(0, currentStepIndex) / 4) * 92}%` }}
+              className="absolute top-[42px] left-[18px] h-1.5 bg-accent-teal z-0 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${(Math.max(0, currentStepIndex) / 4) * 100}%` }}
             />
 
             {/* Steps circles */}
@@ -332,23 +333,31 @@ export const OrderDetail: React.FC = () => {
                 const isCompleted = idx <= currentStepIndex
                 const isActive = idx === currentStepIndex
 
+                const formattedLabel = step === 'placed' ? 'Placed'
+                                      : step === 'confirmed' ? 'Confirmed'
+                                      : step === 'packed' ? 'Packed'
+                                      : step === 'shipped' ? 'Shipped'
+                                      : 'Delivered'
+
                 return (
-                  <div key={step} className="flex flex-col items-center text-center space-y-2">
+                  <div key={step} className="flex flex-col items-center text-center space-y-3">
                     <div
-                      className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-heading text-xs font-bold transition duration-300 ${
-                        isCompleted
-                          ? 'bg-accent-teal border-accent-teal text-white'
-                          : 'bg-surface border-border text-ink-muted'
-                      } ${isActive ? 'ring-4 ring-accent-teal/20' : ''}`}
-                    >
-                      {isCompleted ? '✓' : idx + 1}
-                    </div>
-                    <span
-                      className={`text-xs font-heading capitalize font-bold ${
-                        isActive ? 'text-accent-teal' : isCompleted ? 'text-ink' : 'text-ink-muted'
+                      className={`w-9 h-9 rounded-full border-2 flex items-center justify-center font-heading text-sm font-black transition-all duration-300 ${
+                        isActive
+                          ? 'bg-primary border-primary text-white scale-110 shadow-md ring-4 ring-primary/20 z-20'
+                          : isCompleted
+                          ? 'bg-accent-teal border-accent-teal text-white shadow-sm z-10'
+                          : 'bg-surface border-border text-ink-muted/40 z-10'
                       }`}
                     >
-                      {step}
+                      {isCompleted && !isActive ? '✓' : idx + 1}
+                    </div>
+                    <span
+                      className={`text-xs font-heading font-black tracking-wide ${
+                        isActive ? 'text-primary' : isCompleted ? 'text-ink font-bold' : 'text-ink-muted/70 font-semibold'
+                      }`}
+                    >
+                      {formattedLabel}
                     </span>
                   </div>
                 )

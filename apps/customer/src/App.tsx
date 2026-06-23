@@ -55,21 +55,21 @@ const NavigationHeader: React.FC = () => {
   const wishlistCount = wishlistItems.length
 
   const navLinkClass = (active: boolean) =>
-    `font-heading font-medium text-sm tracking-widest uppercase transition-colors duration-150 pb-0.5 border-b-2 ${
+    `font-heading font-bold text-base text-ink transition-colors duration-200 pb-0.5 border-b-2 ${
       active
-        ? 'text-ink border-ink'
-        : 'text-ink-muted border-transparent hover:text-ink hover:border-ink/30'
+        ? 'text-primary border-primary'
+        : 'border-transparent hover:text-primary'
     }`
 
   return (
-    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-md border-b border-border/50' : 'bg-white border-b border-border'}`}>
+    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-[#EAE3D5]' : 'bg-white border-b border-border'}`}>
       <div className="section-inner h-16 flex items-center justify-between gap-6">
         {/* Brand wordmark */}
         <Link
           to="/"
-          className="font-heading font-semibold text-xl text-ink tracking-tight shrink-0 hover:text-ink-muted transition-colors"
+          className="font-heading font-black text-2xl text-secondary shrink-0 transition-colors"
         >
-          Toy Cabin
+          🪀 Toy Cabin
         </Link>
 
         {/* Center nav links — desktop */}
@@ -112,7 +112,7 @@ const NavigationHeader: React.FC = () => {
             aria-label="Search products"
             className="text-ink-muted hover:text-ink transition-colors duration-150"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
@@ -123,13 +123,13 @@ const NavigationHeader: React.FC = () => {
             <Link
               to="/wishlist"
               aria-label="Wishlist"
-              className="relative text-ink-muted hover:text-ink transition-colors duration-150"
+              className="relative text-ink-muted hover:text-ink transition-colors duration-150 flex items-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
               {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[9px] font-heading font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 bg-accent-pink text-white text-[11px] font-heading font-bold min-w-[20px] h-5 rounded-pill flex items-center justify-center px-1 shadow">
                   {wishlistCount}
                 </span>
               )}
@@ -140,7 +140,7 @@ const NavigationHeader: React.FC = () => {
               aria-label="Wishlist – sign in required"
               className="text-ink-muted hover:text-ink transition-colors duration-150"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
               </svg>
             </Link>
@@ -151,15 +151,15 @@ const NavigationHeader: React.FC = () => {
             <Link
               to="/cart"
               aria-label="Shopping cart"
-              className="relative text-ink-muted hover:text-ink transition-colors duration-150"
+              className="relative text-ink-muted hover:text-ink transition-colors duration-150 flex items-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 bg-secondary text-white text-[9px] font-heading font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 bg-primary text-white text-[11px] font-heading font-bold min-w-[20px] h-5 rounded-pill flex items-center justify-center px-1 shadow">
                   {cartCount}
                 </span>
               )}
@@ -170,7 +170,7 @@ const NavigationHeader: React.FC = () => {
               aria-label="Cart – sign in required"
               className="text-ink-muted hover:text-ink transition-colors duration-150"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
@@ -184,7 +184,7 @@ const NavigationHeader: React.FC = () => {
               <div className="flex items-center gap-3">
                 <Link
                   to="/profile"
-                  className="text-sm font-heading font-medium text-ink-muted hover:text-ink transition-colors"
+                  className="text-sm font-heading font-bold text-ink hover:text-primary transition-colors"
                 >
                   {user?.name.split(' ')[0]}
                 </Link>
@@ -198,7 +198,7 @@ const NavigationHeader: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-sm font-heading font-semibold text-ink border border-ink/20 px-4 py-1.5 rounded-full hover:bg-ink hover:text-white transition-all duration-150"
+                className="rounded-pill bg-primary text-white px-5 py-2 font-heading font-bold text-sm transition-all hover:bg-primary-hover"
               >
                 Sign In
               </Link>
@@ -230,21 +230,21 @@ const NavigationHeader: React.FC = () => {
 
       {/* Mobile menu drawer */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-border px-6 py-5 space-y-4 animate-fade-in">
-          <Link to="/products" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Shop</Link>
-          <Link to="/about" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">About</Link>
-          <Link to="/contact" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Contact</Link>
-          <Link to="/help" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Help</Link>
+        <div className="md:hidden bg-white border-t border-border px-6 py-5 space-y-4 animate-fade-in flex flex-col">
+          <Link to="/products" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">🛍️ Shop</Link>
+          <Link to="/about" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">ℹ️ About</Link>
+          <Link to="/contact" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">📞 Contact</Link>
+          <Link to="/help" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">❓ Help</Link>
           {isLoggedIn ? (
             <>
-              <Link to="/orders" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Orders</Link>
-              <Link to="/wishlist" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Wishlist {wishlistCount > 0 && `(${wishlistCount})`}</Link>
-              <Link to="/cart" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Cart {cartCount > 0 && `(${cartCount})`}</Link>
-              <Link to="/profile" onClick={() => setMobileOpen(false)} className="block font-heading font-medium text-sm uppercase tracking-widest text-ink-muted hover:text-ink transition-colors py-1.5">Profile</Link>
-              <button onClick={() => { logout(); setMobileOpen(false) }} className="block font-heading font-medium text-sm uppercase tracking-widest text-primary hover:text-primary/80 transition-colors py-1.5">Logout</button>
+              <Link to="/orders" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">📦 Orders</Link>
+              <Link to="/wishlist" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">❤️ Wishlist {wishlistCount > 0 && `(${wishlistCount})`}</Link>
+              <Link to="/cart" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">🛒 Cart {cartCount > 0 && `(${cartCount})`}</Link>
+              <Link to="/profile" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink-muted hover:text-primary transition-colors">👤 Profile</Link>
+              <button onClick={() => { logout(); setMobileOpen(false) }} className="block text-left font-heading font-bold text-base py-3 text-primary hover:text-primary/80 transition-colors">Logout</button>
             </>
           ) : (
-            <Link to="/login" onClick={() => setMobileOpen(false)} className="block font-heading font-semibold text-sm uppercase tracking-widest text-ink hover:text-ink-muted transition-colors py-1.5">Sign In</Link>
+            <Link to="/login" onClick={() => setMobileOpen(false)} className="block font-heading font-bold text-base py-3 text-ink hover:text-primary transition-colors">🔑 Sign In</Link>
           )}
         </div>
       )}
@@ -263,7 +263,7 @@ const Footer: React.FC = () => {
 
           {/* Column 1 — Brand */}
           <div className="space-y-4">
-            <p className="font-heading font-semibold text-xl text-ink tracking-tight">Toy Cabin</p>
+            <p className="font-heading font-black text-xl text-ink tracking-tight">🪀 Toy Cabin</p>
             <p className="font-body text-sm text-ink-muted leading-relaxed">
               Handcrafted wooden toys made from sustainable, organic materials — built to spark imagination and last a lifetime.
             </p>
@@ -271,7 +271,7 @@ const Footer: React.FC = () => {
 
           {/* Column 2 — Shop */}
           <div className="space-y-4">
-            <p className="font-heading font-bold text-xs uppercase tracking-widest text-ink-muted">Shop</p>
+            <p className="font-heading font-black text-xs uppercase tracking-widest text-ink-muted">Shop</p>
             <ul className="space-y-3">
               <li><Link to="/products" className="font-body text-sm text-ink hover:text-primary transition-colors">All Products</Link></li>
               <li><Link to="/products?sort=newest" className="font-body text-sm text-ink hover:text-primary transition-colors">New Arrivals</Link></li>
@@ -283,7 +283,7 @@ const Footer: React.FC = () => {
 
           {/* Column 3 — Company */}
           <div className="space-y-4">
-            <p className="font-heading font-bold text-xs uppercase tracking-widest text-ink-muted">Company</p>
+            <p className="font-heading font-black text-xs uppercase tracking-widest text-ink-muted">Company</p>
             <ul className="space-y-3">
               <li><Link to="/about" className="font-body text-sm text-ink hover:text-primary transition-colors">About Us</Link></li>
               <li><Link to="/contact" className="font-body text-sm text-ink hover:text-primary transition-colors">Contact</Link></li>
@@ -296,7 +296,7 @@ const Footer: React.FC = () => {
 
           {/* Column 4 — Connect */}
           <div className="space-y-4">
-            <p className="font-heading font-bold text-xs uppercase tracking-widest text-ink-muted">Connect</p>
+            <p className="font-heading font-black text-xs uppercase tracking-widest text-ink-muted">Connect</p>
             <div className="flex items-center gap-4">
               {/* Instagram placeholder */}
               <a href="#" aria-label="Instagram" className="text-ink-muted hover:text-ink transition-colors">

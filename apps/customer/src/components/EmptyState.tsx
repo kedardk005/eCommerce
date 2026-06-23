@@ -18,10 +18,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onClick,
   icon
 }) => {
-  const buttonClasses = "btn-primary bg-accent-yellow hover:bg-accent-yellow/95 text-ink font-heading font-semibold px-6 py-2.5 rounded-md shadow-xs transition"
+  const buttonClasses = "btn-primary"
 
   return (
-    <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 bg-surface/50 border border-border/80 rounded-xl shadow-xs max-w-lg mx-auto space-y-6 animate-fade-in my-8">
+    <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 bg-surface border border-border rounded-2xl shadow-sm max-w-lg mx-auto space-y-6 animate-fade-in my-8">
       {icon ? (
         icon
       ) : (

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import type { Variant, Review } from '../mockData'
 import { useRequireAuth } from '../hooks/useRequireAuth'
 import { useCart } from '../context/CartContext'
@@ -8,10 +8,21 @@ import { useAuth } from '../context/AuthContext'
 import PageContainer from '../components/PageContainer'
 import BadgeTag from '../components/BadgeTag'
 
+const AGE_COLORS: Record<string, string> = {
+  '0-2': 'var(--color-age-0)',
+  '3-5': 'var(--color-age-3)',
+  '6-8': 'var(--color-age-6)',
+  '9-12': 'var(--color-age-9)',
+  '0-1 years': 'var(--color-age-0)',
+  '1-3 years': 'var(--color-age-3)',
+  '3-5 years': 'var(--color-age-3)',
+  '5-7 years': 'var(--color-age-6)',
+  '8+ years': 'var(--color-age-9)'
+}
+
 export const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const { isLoggedIn, user, authFetch } = useAuth()
-  const navigate = useNavigate()
   const { addToCart } = useCart()
   const { addToWishlist } = useWishlist()
   
@@ -42,6 +53,16 @@ export const ProductDetail: React.FC = () => {
   // Simulated action success states
   const [cartSuccess, setCartSuccess] = useState('')
   const [wishlistSuccess, setWishlistSuccess] = useState('')
+
+  // Quantity counter state
+  const [quantity, setQuantity] = useState(1)
+  const decrease = () => setQuantity((prev) => Math.max(1, prev - 1))
+  const increase = () => setQuantity((prev) => Math.min(selectedVariant?.stock || 99, prev + 1))
+
+  // Reset quantity when variant changes
+  useEffect(() => {
+    setQuantity(1)
+  }, [selectedVariant])
 
   // Authentication check helper
   const checkAuth = useRequireAuth()
@@ -201,17 +222,10 @@ export const ProductDetail: React.FC = () => {
   // Actions wrapped in login checks
   const handleAddToCart = () => {
     checkAuth(() => {
-      addToCart(product, selectedVariant, 1)
-      setCartSuccess(`Success: 1x "${product.title}" (${selectedVariant.name}) added to Cart!`)
+      addToCart(product, selectedVariant, quantity)
+      setCartSuccess(`Success: ${quantity}x "${product.title}" (${selectedVariant.name}) added to Cart!`)
       setWishlistSuccess('')
-      setTimeout(() => setCartSuccess(''), 4000)
-    })
-  }
-
-  const handleBuyNow = () => {
-    checkAuth(() => {
-      addToCart(product, selectedVariant, 1)
-      navigate('/cart')
+      setTimeout(() => setCartSuccess(''), 2000)
     })
   }
 
@@ -220,7 +234,7 @@ export const ProductDetail: React.FC = () => {
       addToWishlist(product)
       setWishlistSuccess(`Success: Added "${product.title}" to your Wishlist!`)
       setCartSuccess('')
-      setTimeout(() => setWishlistSuccess(''), 4000)
+      setTimeout(() => setWishlistSuccess(''), 2000)
     })
   }
 
@@ -338,7 +352,7 @@ export const ProductDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
         {/* Left: Product Images */}
         <div className="space-y-4">
-          <div className="h-[350px] sm:h-[450px] bg-border rounded-2xl flex items-center justify-center border border-border relative select-none shadow-xs border-b-[3px] border-primary overflow-hidden w-full">
+          <div className="h-[350px] sm:h-[450px] bg-bg rounded-2xl shadow-md overflow-hidden relative w-full flex items-center justify-center">
             {product.images && product.images.length > 0 && product.images[activeImageIndex]?.url ? (
               <img
                 src={product.images[activeImageIndex].url}
@@ -362,13 +376,13 @@ export const ProductDetail: React.FC = () => {
                 <button
                   key={img.id || idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-20 h-20 rounded-xl border flex items-center justify-center overflow-hidden transition shrink-0 ${
+                  className={`w-16 h-16 rounded-lg border-2 transition-all overflow-hidden shrink-0 ${
                     idx === activeImageIndex 
-                      ? 'border-secondary bg-bg/20 shadow-xs ring-2 ring-secondary/20' 
-                      : 'border-border bg-surface hover:bg-bg'
+                      ? 'border-primary' 
+                      : 'border-transparent hover:border-primary'
                   }`}
                 >
-                  <img src={img.url} alt="thumbnail" className="w-full h-full object-cover" />
+                  <img src={img.url} alt="thumbnail" className="w-full h-full object-cover cursor-pointer" />
                 </button>
               ))}
             </div>
@@ -381,25 +395,34 @@ export const ProductDetail: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <BadgeTag text={product.category} variant="secondary" />
               <BadgeTag text={product.brand} variant="blue" />
-              <BadgeTag text={product.ageGroup} variant="green" />
             </div>
-            <h1 className="text-3xl sm:text-5xl font-heading leading-tight text-ink tracking-tight">{product.title}</h1>
+            <h1 className="text-3xl sm:text-4xl font-heading font-black leading-tight text-ink tracking-tight">{product.title}</h1>
+            {product.ageGroup && (
+              <span className="badge-age inline-block mt-2 animate-pop-in"
+                    style={{ 
+                      backgroundColor: AGE_COLORS[product.ageGroup] ?? 'var(--color-accent-teal)',
+                      color: (product.ageGroup.includes('0-2') || product.ageGroup.includes('0-1')) ? 'var(--color-secondary)' : '#ffffff'
+                    }}
+              >
+                Ages {product.ageGroup}
+              </span>
+            )}
             
             {/* Rating summary */}
-            <div className="flex items-center space-x-2 font-body text-sm font-semibold">
+            <div className="flex items-center space-x-2 font-body text-sm font-semibold pt-1">
               <span className="text-accent-yellow text-lg">★</span>
               <span className="font-heading font-bold text-ink">{product.rating.toFixed(1)}</span>
-              <span className="text-ink-muted">({product.reviews.length} reviews)</span>
+              <span className="text-ink-muted">({reviews.length} reviews)</span>
             </div>
           </div>
 
           {/* Pricing */}
           <div className="flex items-baseline space-x-3 border-y border-border/60 py-4">
-            <span className="text-3xl sm:text-4xl font-heading font-bold text-ink">
+            <span className="text-4xl font-heading font-black text-primary">
               ₹{product.discountPrice.toFixed(2)}
             </span>
             {product.price > product.discountPrice && (
-              <span className="text-lg font-body text-ink-muted line-through">
+              <span className="text-xl font-body text-ink-muted line-through">
                 ₹{product.price.toFixed(2)}
               </span>
             )}
@@ -410,22 +433,35 @@ export const ProductDetail: React.FC = () => {
             <div className="space-y-3">
               <span className="text-xs uppercase font-heading tracking-widest text-ink-muted font-bold block">Select Variant</span>
               <div className="flex flex-wrap gap-2">
-                {product.variants.map((v: Variant) => (
-                  <button
-                    key={v.name}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`px-4 py-2 border rounded-md font-heading font-semibold text-sm transition duration-150 ${
-                      selectedVariant.name === v.name
-                        ? 'border-secondary bg-bg/35 text-ink shadow-xs'
-                        : 'border-border hover:border-primary bg-surface hover:bg-bg/40'
-                    }`}
-                  >
-                    {v.name}
-                  </button>
-                ))}
+                {product.variants.map((v: Variant) => {
+                  const isSelected = selectedVariant?.name === v.name
+                  return (
+                    <button
+                      key={v.name}
+                      onClick={() => setSelectedVariant(v)}
+                      className={`min-w-[56px] min-h-[44px] px-4 py-2 border-2 transition duration-150 rounded-md font-heading font-bold text-sm select-none ${
+                        isSelected
+                          ? 'border-primary bg-primary/10 text-primary font-bold'
+                          : 'border-border text-ink-muted bg-surface hover:border-primary/50'
+                      }`}
+                    >
+                      {v.name}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           )}
+
+          {/* Quantity Selector Stepper */}
+          <div className="flex flex-col space-y-2.5">
+            <span className="text-xs uppercase font-heading tracking-widest text-ink-muted font-bold block">Quantity</span>
+            <div className="flex items-center gap-3 rounded-pill border-2 border-border w-fit px-3 py-1 bg-surface shadow-sm">
+              <button onClick={decrease} className="text-2xl font-black text-ink w-10 h-10 flex items-center justify-center hover:text-primary active:scale-95 transition-transform" aria-label="Decrease quantity">−</button>
+              <span className="font-heading font-black text-xl w-8 text-center">{quantity}</span>
+              <button onClick={increase} className="text-2xl font-black text-ink w-10 h-10 flex items-center justify-center hover:text-primary active:scale-95 transition-transform" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
 
           {/* Dynamic Stock Status */}
           <div className="flex items-center space-x-2 font-body text-sm font-semibold">
@@ -456,29 +492,26 @@ export const ProductDetail: React.FC = () => {
           )}
 
           {/* Action CTAs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div className="flex flex-col gap-4 pt-2">
             <button
               onClick={handleAddToCart}
               disabled={selectedVariant.stock === 0}
-              className="btn-primary bg-accent-yellow hover:bg-accent-yellow/95 disabled:bg-border disabled:text-ink-muted text-ink font-heading font-bold py-3 px-6 rounded-md shadow-xs flex items-center justify-center space-x-2"
+              className={`w-full min-h-[56px] text-lg font-heading font-black text-white rounded-pill transition-all duration-200 active:scale-95 shadow flex items-center justify-center gap-2 ${
+                cartSuccess
+                  ? 'bg-accent-green hover:bg-accent-green'
+                  : 'bg-primary hover:bg-primary-hover disabled:bg-border disabled:text-ink-muted'
+              }`}
             >
-              <span>🛒</span>
-              <span>Add to Cart</span>
+              <span>{cartSuccess ? '✅' : '🛒'}</span>
+              <span>{cartSuccess ? 'Added!' : 'Add to Cart'}</span>
             </button>
-            <button
-              onClick={handleBuyNow}
-              disabled={selectedVariant.stock === 0}
-              className="btn-primary bg-secondary hover:bg-primary-hover disabled:bg-border disabled:text-ink-muted text-white font-heading font-bold py-3 px-6 rounded-md shadow-xs flex items-center justify-center space-x-2"
-            >
-              <span>⚡</span>
-              <span>Buy Now</span>
-            </button>
+            
             <button
               onClick={handleAddToWishlist}
-              className="sm:col-span-2 btn-primary bg-surface hover:bg-bg border border-border text-ink font-heading font-bold py-2.5 px-6 rounded-md shadow-xs flex items-center justify-center space-x-2"
+              className="w-full min-h-[48px] border-2 border-primary text-primary font-heading font-bold rounded-pill hover:bg-primary/5 transition-all flex items-center justify-center gap-2"
             >
               <span>❤️</span>
-              <span>Add to Wishlist</span>
+              <span>Save to Wishlist</span>
             </button>
           </div>
 
@@ -512,11 +545,9 @@ export const ProductDetail: React.FC = () => {
                     type="button"
                     disabled={isSubmittingReview}
                     onClick={() => setNewRating(star)}
-                    className={`text-xl transition disabled:opacity-50 ${
-                      star <= newRating ? 'text-accent-yellow' : 'text-border hover:text-accent-yellow/40'
-                    }`}
+                    className="text-3xl cursor-pointer transition disabled:opacity-50 select-none"
                   >
-                    ★
+                    {star <= newRating ? '⭐' : '☆'}
                   </button>
                 ))}
               </div>
@@ -556,70 +587,67 @@ export const ProductDetail: React.FC = () => {
               const isAuthor = isLoggedIn && rev.userId === user?.id
 
               return (
-                <div key={rev.id} className="card-workshop p-5 space-y-3 bg-surface border-b-[2px] border-border shadow-xs">
-                  <div className="flex justify-between items-center text-xs sm:text-sm border-b border-border/40 pb-2">
-                    <span className="font-heading font-bold text-ink text-sm">{rev.reviewerName}</span>
-                    <span className="font-body text-ink-muted">{rev.date}</span>
-                  </div>
+                  <div key={rev.id} className="rounded-xl border border-border p-4 bg-surface space-y-3">
+                    <div className="flex justify-between items-center text-xs sm:text-sm border-b border-border/40 pb-2">
+                      <span className="font-heading font-bold text-ink text-sm">{rev.reviewerName}</span>
+                      <span className="font-body text-ink-muted">{rev.date}</span>
+                    </div>
 
-                  {isEditing ? (
-                    <form onSubmit={(e) => handleSaveEditReview(e, rev.id)} className="space-y-3">
-                      {editReviewError && (
-                        <div className="bg-primary/10 border border-primary/25 p-3 rounded-lg text-primary text-xs font-semibold">
-                          ⚠️ {editReviewError}
+                    {isEditing ? (
+                      <form onSubmit={(e) => handleSaveEditReview(e, rev.id)} className="space-y-3">
+                        {editReviewError && (
+                          <div className="bg-primary/10 border border-primary/25 p-3 rounded-lg text-primary text-xs font-semibold">
+                            ⚠️ {editReviewError}
+                          </div>
+                        )}
+                        <div className="flex items-center space-x-2">
+                          <span className="font-body text-xs text-ink-muted">Rating:</span>
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                disabled={isSubmittingEditReview}
+                                onClick={() => setEditingRating(star)}
+                                className="text-3xl cursor-pointer transition disabled:opacity-50 select-none"
+                              >
+                                {star <= editingRating ? '⭐' : '☆'}
+                              </button>
+                            ))}
+                          </div>
                         </div>
-                      )}
-                      <div className="flex items-center space-x-2">
-                        <span className="font-body text-xs text-ink-muted">Rating:</span>
-                        <div className="flex gap-1">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              key={star}
-                              type="button"
-                              disabled={isSubmittingEditReview}
-                              onClick={() => setEditingRating(star)}
-                              className={`text-lg transition disabled:opacity-50 ${
-                                star <= editingRating ? 'text-accent-yellow' : 'text-border'
-                              }`}
-                            >
-                              ★
-                            </button>
-                          ))}
+                        <textarea
+                          required
+                          rows={2}
+                          disabled={isSubmittingEditReview}
+                          value={editingComment}
+                          onChange={(e) => setEditingComment(e.target.value)}
+                          className="w-full rounded-lg border border-border p-3 focus:ring-2 focus:ring-primary/20 outline-none disabled:opacity-50"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            type="submit"
+                            disabled={isSubmittingEditReview}
+                            className="bg-accent-blue text-white font-heading text-[11px] px-3.5 py-1.5 rounded-lg shadow-xs flex items-center justify-center space-x-1"
+                          >
+                            {isSubmittingEditReview && <span className="animate-spin mr-1">⌛</span>}
+                            <span>Save</span>
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isSubmittingEditReview}
+                            onClick={() => setEditingReviewId(null)}
+                            className="bg-bg text-ink border border-border font-heading text-[11px] px-3.5 py-1.5 rounded-lg disabled:opacity-50"
+                          >
+                            Cancel
+                          </button>
                         </div>
-                      </div>
-                      <textarea
-                        required
-                        rows={2}
-                        disabled={isSubmittingEditReview}
-                        value={editingComment}
-                        onChange={(e) => setEditingComment(e.target.value)}
-                        className="input-workshop disabled:opacity-50"
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          type="submit"
-                          disabled={isSubmittingEditReview}
-                          className="btn-primary bg-accent-blue text-white font-heading text-[11px] px-3.5 py-1.5 rounded shadow-xs flex items-center justify-center space-x-1"
-                        >
-                          {isSubmittingEditReview && <span className="animate-spin mr-1">⌛</span>}
-                          <span>Save</span>
-                        </button>
-                        <button
-                          type="button"
-                          disabled={isSubmittingEditReview}
-                          onClick={() => setEditingReviewId(null)}
-                          className="btn-primary bg-bg text-ink border border-border font-heading text-[11px] px-3.5 py-1.5 rounded disabled:opacity-50"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <>
-                      <div className="flex text-accent-yellow text-sm">
-                        {'★'.repeat(rev.rating)}
-                        {'☆'.repeat(5 - rev.rating)}
-                      </div>
+                      </form>
+                    ) : (
+                      <>
+                        <div className="flex text-accent-yellow text-sm" aria-label={`${rev.rating} out of 5 stars`}>
+                          {'⭐'.repeat(rev.rating)}
+                        </div>
                       <p className="font-body text-ink text-sm sm:text-base leading-relaxed text-justify">{rev.comment}</p>
                       
                       {isAuthor && (

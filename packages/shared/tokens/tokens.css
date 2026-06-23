@@ -1,17 +1,41 @@
 :root {
-  --color-bg: #F7F5F0;
+  /* Backgrounds */
+  --color-bg: #FBF8F3;           /* warm off-white — easier on young eyes */
   --color-surface: #FFFFFF;
-  --color-border: #E7E4DC;
-  --color-ink: #20212B;
-  --color-ink-muted: #767685;
-  --color-primary: #FF5C4D;
-  --color-primary-hover: #E8492C;
-  --color-secondary: #2F2F4A;
-  --color-accent-yellow: #FFC53D;
-  --color-accent-teal: #2BBBA0;
-  --color-accent-blue: #4D8DFF;
-  --radius-md: 8px;
-  --radius-lg: 14px;
-  --font-heading: 'Sora', sans-serif;
+  --color-border: #EAE3D5;
+
+  /* Text */
+  --color-ink: #1C1C2E;
+  --color-ink-muted: #6B6B80;
+
+  /* Primary — warm terracotta, energetic but not harsh */
+  --color-primary: #E8623A;
+  --color-primary-hover: #CF4E28;
+
+  /* Secondary — deep wood brown, trustworthy for adults */
+  --color-secondary: #3D2B1F;
+
+  /* Accent palette — playful but tasteful */
+  --color-accent-yellow: #F5C842;   /* sunflower */
+  --color-accent-green: #5BAD72;    /* forest green */
+  --color-accent-blue: #4A90D9;     /* sky blue */
+  --color-accent-pink: #E07FAA;     /* rose */
+  --color-accent-teal: #2BBBA0;     /* keep existing teal */
+
+  /* Age badge colors — one per age band */
+  --color-age-0:  #F5C842;   /* 0–2  */
+  --color-age-3:  #5BAD72;   /* 3–5  */
+  --color-age-6:  #4A90D9;   /* 6–8  */
+  --color-age-9:  #E07FAA;   /* 9–12 */
+
+  /* Border radius — rounder than current for friendliness */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+
+  /* Fonts — Nunito for headings (round, friendly, legible for kids)
+             Plus Jakarta Sans for body (keep current, adult-readable) */
+  --font-heading: 'Nunito', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 }
