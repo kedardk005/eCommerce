@@ -81,11 +81,25 @@ app.use(cors({
   credentials: true
 }))
 
-app.use(helmet())
+app.use(helmet({
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: []
+    }
+  }
+}))
 
 // Add JSON size limits to prevent body parser payload abuse
-app.use(express.json({ limit: '50mb' }))
-app.use(express.urlencoded({ limit: '50mb', extended: true }))
+app.use(express.json({ limit: '1mb' }))
+app.use(express.urlencoded({ limit: '1mb', extended: true }))
 app.use(cookieParser())
 
 // Mount rate limiters
@@ -124,54 +138,8 @@ app.get('/api/health', (req, res) => {
   })
 })
 
-async function ensureSuperOwnerExists() {
-  try {
-    const email = 'toynjoy.online@gmail.com'
-    const passwordHash = '$2b$10$YjRo9iSWC9hwKffyOP4U9eY.yVDw5/CrbVo0Ayqp3BxsMQPuh23qC'
-    
-    const existing = await prisma.user.findUnique({
-      where: { email },
-      include: { adminPermissions: true }
-    })
-
-    if (existing) {
-      await prisma.user.update({
-        where: { id: existing.id },
-        data: { passwordHash, isBlocked: false }
-      })
-      console.log(`[Startup] Super owner user updated: ${email}`)
-    } else {
-      await prisma.user.create({
-        data: {
-          name: 'Toy-n-Joy Super Owner',
-          email,
-          passwordHash,
-          role: Role.super_owner,
-          emailVerified: true,
-          adminPermissions: {
-            createMany: {
-              data: [
-                { permission: 'manage_catalog' },
-                { permission: 'manage_orders' },
-                { permission: 'manage_customers' },
-                { permission: 'manage_returns' },
-                { permission: 'manage_support' },
-                { permission: 'manage_cms' }
-              ]
-            }
-          }
-        }
-      })
-      console.log(`[Startup] Super owner user created: ${email}`)
-    }
-  } catch (error) {
-    console.error('[Startup] Failed to ensure super owner user exists:', error)
-  }
-}
-
 const server = app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`)
-  ensureSuperOwnerExists()
 })
 
 export { app, server }

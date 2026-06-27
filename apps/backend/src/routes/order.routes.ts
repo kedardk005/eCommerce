@@ -9,6 +9,7 @@ import { ShiprocketService } from '../services/shiprocket.service'
 import { BrevoService } from '../services/brevo.service'
 import LRU from 'lru-cache'
 import crypto from 'crypto'
+import Razorpay from 'razorpay'
 
 const router = Router()
 
@@ -316,9 +317,17 @@ router.post('/orders/checkout', requireAuth, async (req: AuthenticatedRequest, r
       return sendJson(201, order)
     }
 
-    // 6. Online Payment Processing (Razorpay stub)
-    // TODO: Integrate Razorpay Node SDK in Phase 4D
-    const razorpayOrderId = `rzp_order_${Math.floor(100000 + Math.random() * 900000)}`
+    // 6. Online Payment Processing (Razorpay SDK)
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!
+    })
+    const rzpOrder = await razorpay.orders.create({
+      amount: Math.round(total * 100), // paise
+      currency: 'INR',
+      receipt: `order_${Date.now()}`
+    })
+    const razorpayOrderId = rzpOrder.id
 
     const order = await prisma.order.create({
       data: {
@@ -1190,11 +1199,13 @@ router.get('/orders/:id/tracking', requireAuth, async (req: AuthenticatedRequest
 router.post('/shiprocket/webhook', async (req, res) => {
   try {
     const webhookToken = process.env.SHIPROCKET_WEBHOOK_TOKEN
-    if (webhookToken) {
-      const headerToken = req.headers['x-webhook-token']
-      if (headerToken !== webhookToken) {
-        return res.status(401).json({ error: 'Unauthorized webhook request.' })
-      }
+    if (!webhookToken) {
+      console.error('[Shiprocket Webhook] SHIPROCKET_WEBHOOK_TOKEN not configured')
+      return res.status(500).json({ error: 'Webhook not configured' })
+    }
+    const headerToken = req.headers['x-webhook-token']
+    if (headerToken !== webhookToken) {
+      return res.status(401).json({ error: 'Unauthorized webhook request.' })
     }
 
     const { awb, current_status } = req.body
@@ -1321,7 +1332,7 @@ router.post('/shiprocket/webhook', async (req, res) => {
  */
 router.post('/payments/webhook', async (req, res) => {
   try {
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET || 'test_webhook_secret'
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET!
     const signature = req.headers['x-razorpay-signature'] as string
 
     if (!signature) {

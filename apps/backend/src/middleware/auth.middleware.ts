@@ -23,7 +23,7 @@ export const requireAuth = (req: AuthenticatedRequest, res: Response, next: Next
   }
 
   const token = authHeader.split(' ')[1]
-  const secret = process.env.JWT_ACCESS_SECRET || 'fallback-access-secret'
+  const secret = process.env.JWT_ACCESS_SECRET!
 
   try {
     const decoded = jwt.verify(token, secret) as { id: string; role: Role }

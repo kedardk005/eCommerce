@@ -14,15 +14,17 @@ const ACCESS_TOKEN_EXPIRY = '15m'
 const REFRESH_TOKEN_EXPIRY = '7d'
 const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000 // 7 days in ms
 
-const getAccessSecret = () => process.env.JWT_ACCESS_SECRET || 'fallback-access-secret'
-const getRefreshSecret = () => process.env.JWT_REFRESH_SECRET || 'fallback-refresh-secret'
+const getAccessSecret = () => process.env.JWT_ACCESS_SECRET!
+const getRefreshSecret = () => process.env.JWT_REFRESH_SECRET!
 
 // Validation Schemas
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   email: z.string().email('Invalid email address'),
   phone: z.string().optional(),
-  password: z.string().min(6, 'Password must be at least 6 characters long')
+  password: z.string().min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .regex(/[0-9]/, 'Must contain at least one number')
 })
 
 const loginSchema = z.object({
@@ -46,7 +48,9 @@ const forgotPasswordSchema = z.object({
 const resetPasswordSchema = z.object({
   emailOrPhone: z.string().min(1, 'Email or Phone is required'),
   otp: z.string().length(6, 'OTP must be exactly 6 digits'),
-  newPassword: z.string().min(6, 'Password must be at least 6 characters long')
+  newPassword: z.string().min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .regex(/[0-9]/, 'Must contain at least one number')
 })
 
 /**
