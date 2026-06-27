@@ -11,6 +11,8 @@ import LRU from 'lru-cache'
 import crypto from 'crypto'
 import Razorpay from 'razorpay'
 
+const razorpay = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID!, key_secret: process.env.RAZORPAY_KEY_SECRET! })
+
 const router = Router()
 
 // Idempotency cache stored for 5 minutes in memory, limit to 1000 requests max
@@ -318,15 +320,7 @@ router.post('/orders/checkout', requireAuth, async (req: AuthenticatedRequest, r
     }
 
     // 6. Online Payment Processing (Razorpay SDK)
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!
-    })
-    const rzpOrder = await razorpay.orders.create({
-      amount: Math.round(total * 100), // paise
-      currency: 'INR',
-      receipt: `order_${Date.now()}`
-    })
+    const rzpOrder = await razorpay.orders.create({ amount: Math.round(total * 100), currency: 'INR', receipt: 'receipt_' + Date.now() })
     const razorpayOrderId = rzpOrder.id
 
     const order = await prisma.order.create({
@@ -1200,8 +1194,8 @@ router.post('/shiprocket/webhook', async (req, res) => {
   try {
     const webhookToken = process.env.SHIPROCKET_WEBHOOK_TOKEN
     if (!webhookToken) {
-      console.error('[Shiprocket Webhook] SHIPROCKET_WEBHOOK_TOKEN not configured')
-      return res.status(500).json({ error: 'Webhook not configured' })
+      console.error('[Shiprocket Webhook] SHIPROCKET_WEBHOOK_TOKEN is not configured. Rejecting request.')
+      return res.status(500).json({ error: 'Webhook authentication not configured on server.' })
     }
     const headerToken = req.headers['x-webhook-token']
     if (headerToken !== webhookToken) {
@@ -1348,7 +1342,8 @@ router.post('/payments/webhook', async (req, res) => {
       return res.status(400).json({ error: 'Signature verification failed' })
     }
 
-    const { event, payload } = req.body
+    const parsedBody = Buffer.isBuffer(req.body) ? JSON.parse(req.body.toString('utf-8')) : req.body
+    const { event, payload } = parsedBody
     if (!payload || !payload.payment || !payload.payment.entity) {
       return res.status(400).json({ error: 'Invalid webhook payload structure' })
     }

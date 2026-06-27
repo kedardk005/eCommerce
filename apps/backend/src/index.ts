@@ -4,7 +4,6 @@ import helmet from 'helmet'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { prisma } from './lib/prisma'
-import { Role } from '@prisma/client'
 
 dotenv.config()
 
@@ -81,21 +80,10 @@ app.use(cors({
   credentials: true
 }))
 
-app.use(helmet({
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  },
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: []
-    }
-  }
-}))
+app.use(helmet({ hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }, contentSecurityPolicy: false }))
+
+// Add raw body capture for Razorpay webhook HMAC
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }))
 
 // Add JSON size limits to prevent body parser payload abuse
 app.use(express.json({ limit: '1mb' }))
