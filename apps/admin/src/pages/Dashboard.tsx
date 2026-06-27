@@ -1,7 +1,34 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdminData } from '../context/AdminDataContext'
-import type { SalesDataPoint } from '../mockData'
+
+// Helper to get date string YYYY-MM-DD for a given offset from today
+function offsetDate(offsetDays: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + offsetDays)
+  return d.toISOString().substring(0, 10)
+}
+
+// Short day name from YYYY-MM-DD
+function dayLabel(dateStr: string): string {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const d = new Date(dateStr + 'T00:00:00')
+  return days[d.getDay()]
+}
+
+// Short date label e.g. "Jun 24"
+function shortDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00')
+  return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
+}
+
+interface SalesDataPoint {
+  day: string
+  date: string
+  revenue: number
+  orders: number
+  isToday: boolean
+}
 
 export const Dashboard: React.FC = () => {
   const { products, orders, returns, tickets } = useAdminData()
@@ -14,13 +41,14 @@ export const Dashboard: React.FC = () => {
   const chartWidth = 500
 
   // 1. Calculate live KPIs
+  const todayStr = new Date().toISOString().substring(0, 10)
+
   const ordersTodayList = useMemo(() => {
-    const todayStr = new Date().toISOString().substring(0, 10)
     return orders.filter(o => o.date === todayStr)
-  }, [orders])
+  }, [orders, todayStr])
 
   const ordersTodayCount = ordersTodayList.length
-  
+
   const revenueToday = useMemo(() => {
     return ordersTodayList.reduce((sum, o) => sum + o.total, 0)
   }, [ordersTodayList])
@@ -53,21 +81,39 @@ export const Dashboard: React.FC = () => {
     return tickets.filter(t => t.status === 'open' || t.status === 'in progress').length
   }, [tickets])
 
-  // Dynamic Sales Trend chart data (binding Sunday's metric to live orders)
-  const salesTrendData: SalesDataPoint[] = useMemo(() => {
-    return [
-      { day: 'Mon', date: 'Jun 9', revenue: 980, orders: 28 },
-      { day: 'Tue', date: 'Jun 10', revenue: 1240, orders: 35 },
-      { day: 'Wed', date: 'Jun 11', revenue: 1100, orders: 31 },
-      { day: 'Thu', date: 'Jun 12', revenue: 1750, orders: 48 },
-      { day: 'Fri', date: 'Jun 13', revenue: 1420, orders: 40 },
-      { day: 'Sat', date: 'Jun 14', revenue: 2100, orders: 58 },
-      { day: 'Sun', date: 'Jun 15', revenue: Math.round(revenueToday), orders: Math.max(52, ordersTodayCount) }
-    ]
-  }, [revenueToday, ordersTodayCount])
 
-  const maxRevenue = Math.max(...salesTrendData.map(d => d.revenue))
-  const yAxisCeiling = Math.max(2000, Math.ceil(maxRevenue / 500) * 500)
+
+  // ── Fully Dynamic Sales Trend Chart (Last 7 days from real orders) ──
+  const salesTrendData: SalesDataPoint[] = useMemo(() => {
+    // Initialise map for last 7 days (today = offset 0, 6 days ago = offset -6)
+    const dayMap: Record<string, { revenue: number; orders: number }> = {}
+    for (let i = -6; i <= 0; i++) {
+      const ds = offsetDate(i)
+      dayMap[ds] = { revenue: 0, orders: 0 }
+    }
+
+    // Aggregate real orders into the map
+    orders.forEach(o => {
+      if (dayMap[o.date] !== undefined) {
+        dayMap[o.date].revenue += o.total
+        dayMap[o.date].orders += 1
+      }
+    })
+
+    // Convert to sorted array
+    return Object.entries(dayMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([dateStr, vals]) => ({
+        day: dayLabel(dateStr),
+        date: shortDate(dateStr),
+        revenue: Math.round(vals.revenue * 100) / 100,
+        orders: vals.orders,
+        isToday: dateStr === todayStr
+      }))
+  }, [orders, todayStr])
+
+  const maxRevenue = Math.max(...salesTrendData.map(d => d.revenue), 1)
+  const yAxisCeiling = Math.max(1000, Math.ceil(maxRevenue / 500) * 500)
 
   // Format currency
   const formatINR = (val: number) => {
@@ -88,7 +134,7 @@ export const Dashboard: React.FC = () => {
       case 'Packed':
         return 'bg-accent-blue/25 text-ink border border-accent-blue/40'
       case 'Shipped':
-        return 'bg-accent-blue/40 text-white border border-accent-blue'
+        return 'bg-accent-blue/40 text-ink border border-accent-blue/60'
       case 'Out for Delivery':
         return 'bg-accent-teal/10 text-accent-teal border border-accent-teal/20'
       case 'Delivered':
@@ -127,7 +173,7 @@ export const Dashboard: React.FC = () => {
           <div className="absolute top-0 left-0 w-1 h-full bg-accent-blue" />
           <p className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider">Orders Today</p>
           <p className="text-xl font-heading font-extrabold text-ink mt-1">{ordersTodayCount}</p>
-          <span className="text-[9px] text-ink-muted font-medium">Seeded: {orders.length} total</span>
+          <span className="text-[9px] text-ink-muted font-medium">Total: {orders.length} orders</span>
         </div>
 
         {/* Revenue Today */}
@@ -165,6 +211,7 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
+
       {/* Main Grid Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left 2 Columns: Chart and Recent Orders */}
@@ -174,7 +221,7 @@ export const Dashboard: React.FC = () => {
             <div className="flex justify-between items-center border-b border-border pb-3 mb-4">
               <div>
                 <h3 className="text-xs font-heading font-bold text-ink">Sales Trend (Last 7 Days)</h3>
-                <p className="text-[10px] text-ink-muted">Daily gross orders value (Sunday updates dynamically).</p>
+                <p className="text-[10px] text-ink-muted">Daily gross revenue from all orders — fully live data.</p>
               </div>
               {/* Tooltip Overlay */}
               <div className="text-right h-8">
@@ -199,7 +246,7 @@ export const Dashboard: React.FC = () => {
                 {/* Gridlines */}
                 {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
                   const yVal = chartHeight - (ratio * (chartHeight - 30)) - 20
-                  const labelValue = yAxisCeiling * ratio
+                  const labelValue = Math.round(yAxisCeiling * ratio)
                   return (
                     <g key={idx}>
                       <line
@@ -219,7 +266,7 @@ export const Dashboard: React.FC = () => {
                         textAnchor="end"
                         className="font-mono font-bold"
                       >
-                        ₹{labelValue}
+                        ₹{labelValue >= 1000 ? `${(labelValue / 1000).toFixed(1)}k` : labelValue}
                       </text>
                     </g>
                   )
@@ -230,14 +277,17 @@ export const Dashboard: React.FC = () => {
                   const barWidth = 32
                   const space = (chartWidth - 50) / salesTrendData.length
                   const xVal = 45 + idx * space
-                  const barHeight = (d.revenue / yAxisCeiling) * (chartHeight - 30)
+                  const barHeight = yAxisCeiling > 0
+                    ? (d.revenue / yAxisCeiling) * (chartHeight - 30)
+                    : 0
                   const yVal = chartHeight - barHeight - 20
 
-                  const isHovered = hoveredBar?.day === d.day
+                  const isHovered = hoveredBar?.day === d.day && hoveredBar?.date === d.date
+                  const isToday = d.isToday
 
                   return (
                     <g
-                      key={d.day}
+                      key={`${d.day}-${d.date}`}
                       onMouseEnter={() => setHoveredBar(d)}
                       onMouseLeave={() => setHoveredBar(null)}
                       className="cursor-pointer"
@@ -245,35 +295,54 @@ export const Dashboard: React.FC = () => {
                       {/* Bar Rectangle */}
                       <rect
                         x={xVal}
-                        y={yVal}
+                        y={barHeight > 0 ? yVal : chartHeight - 20 - 2}
                         width={barWidth}
-                        height={barHeight}
+                        height={barHeight > 0 ? barHeight : 2}
                         rx="3"
-                        fill={isHovered ? 'var(--color-primary)' : 'var(--color-bg)'}
-                        className="transition-colors duration-150"
+                        fill={
+                          isHovered
+                            ? 'var(--color-primary)'
+                            : isToday
+                            ? 'var(--color-accent-teal)'
+                            : 'var(--color-secondary)'
+                        }
+                        opacity={isHovered ? 1 : 0.75}
+                        className="transition-all duration-150"
                       />
-                      
+
+                      {/* Today indicator dot */}
+                      {isToday && (
+                        <circle
+                          cx={xVal + barWidth / 2}
+                          cy={yVal - 10}
+                          r="3"
+                          fill="var(--color-accent-teal)"
+                        />
+                      )}
+
                       {/* Revenue Label on Top of Bars */}
-                      <text
-                        x={xVal + barWidth / 2}
-                        y={yVal - 5}
-                        textAnchor="middle"
-                        fill="var(--color-secondary)"
-                        fontSize="8"
-                        fontWeight="bold"
-                        className="font-mono opacity-80"
-                      >
-                        ₹{Math.round(d.revenue)}
-                      </text>
+                      {barHeight > 0 && (
+                        <text
+                          x={xVal + barWidth / 2}
+                          y={yVal - (isToday ? 16 : 5)}
+                          textAnchor="middle"
+                          fill={isToday ? 'var(--color-accent-teal)' : 'var(--color-secondary)'}
+                          fontSize="7"
+                          fontWeight="bold"
+                          className="font-mono opacity-90"
+                        >
+                          ₹{d.revenue >= 1000 ? `${(d.revenue / 1000).toFixed(1)}k` : Math.round(d.revenue)}
+                        </text>
+                      )}
 
                       {/* X-Axis Labels */}
                       <text
                         x={xVal + barWidth / 2}
                         y={chartHeight - 5}
                         textAnchor="middle"
-                        fill="var(--color-ink-muted)"
+                        fill={isToday ? 'var(--color-accent-teal)' : 'var(--color-ink-muted)'}
                         fontSize="9"
-                        fontWeight="600"
+                        fontWeight={isToday ? '800' : '600'}
                       >
                         {d.day}
                       </text>
@@ -281,6 +350,18 @@ export const Dashboard: React.FC = () => {
                   )
                 })}
               </svg>
+            </div>
+
+            {/* Chart legend */}
+            <div className="flex items-center gap-4 mt-2 text-[9px] text-ink-muted justify-end">
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2.5 h-2.5 rounded-sm bg-secondary opacity-75" />
+                Past days
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block w-2.5 h-2.5 rounded-sm bg-accent-teal opacity-75" />
+                Today
+              </span>
             </div>
           </div>
 

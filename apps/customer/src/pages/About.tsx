@@ -14,7 +14,7 @@ export const About: React.FC = () => {
             Handcrafted with love, built for generations.
           </h1>
           <p className="text-base sm:text-lg text-ink-muted leading-relaxed font-body">
-            Welcome to Toy Cabin, where we bring back the magic of tactile play. Inspired by the simple joy of classic, natural toys, we craft premium wooden pieces designed to fire up young imaginations and stand the test of active childhood play.
+            Welcome to Toy-n-Joy, where we bring back the magic of tactile play. Inspired by the simple joy of classic, natural toys, we craft premium wooden pieces designed to fire up young imaginations and stand the test of active childhood play.
           </p>
         </div>
         <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-y-1/4 translate-x-1/8">
@@ -31,7 +31,7 @@ export const About: React.FC = () => {
             Made from Sustainable, Organic Hardwoods
           </h2>
           <p className="text-sm sm:text-base text-ink-muted leading-relaxed font-body">
-            Every toy at Toy Cabin starts its life in responsibly managed, certified forests. We work primarily with premium hardwoods like close-grained beechwood, smooth maple, and aromatic pine, selected for their natural antibacterial properties, gorgeous grain patterns, and exceptional durability.
+            Every toy at Toy-n-Joy starts its life in responsibly managed, certified forests. We work primarily with premium hardwoods like close-grained beechwood, smooth maple, and aromatic pine, selected for their natural antibacterial properties, gorgeous grain patterns, and exceptional durability.
           </p>
           <div className="space-y-4 pt-2">
             <div className="flex gap-4">
@@ -95,7 +95,7 @@ export const About: React.FC = () => {
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <h2 className="text-3xl font-heading font-extrabold text-ink tracking-tight">Our Core Values</h2>
           <p className="text-sm sm:text-base text-ink-muted leading-relaxed font-body">
-            At Toy Cabin, our mission goes beyond making beautiful products. We shape experiences that foster growth, connection, and appreciation for craftsmanship.
+            At Toy-n-Joy, our mission goes beyond making beautiful products. We shape experiences that foster growth, connection, and appreciation for craftsmanship.
           </p>
         </div>
 

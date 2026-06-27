@@ -99,13 +99,16 @@ export const Help: React.FC = () => {
             </div>
           </a>
 
-          <div className="p-4 border border-border rounded-xl bg-accent-blue/5 border-b-[2px] border-b-accent-blue/30 flex items-center space-x-3">
+          <a
+            href="mailto:toynjoy.online@gmail.com"
+            className="p-4 border border-border rounded-xl bg-accent-blue/5 hover:bg-accent-blue/10 border-b-[2px] border-b-accent-blue/30 transition flex items-center space-x-3 active:translate-y-[1px] group"
+          >
             <span className="text-2xl">✉️</span>
             <div>
-              <span className="font-heading font-bold text-ink block text-sm sm:text-base">Email Support</span>
-              <span className="text-xs text-ink-muted font-body mt-0.5 block">hello@toycabin.com (response in 24h).</span>
+              <span className="font-heading font-bold text-ink block text-sm sm:text-base group-hover:text-primary transition-colors">Email Support</span>
+              <span className="text-xs text-ink-muted font-body mt-0.5 block">toynjoy.online@gmail.com (response in 24h).</span>
             </div>
-          </div>
+          </a>
         </div>
       </section>
     </PageContainer>

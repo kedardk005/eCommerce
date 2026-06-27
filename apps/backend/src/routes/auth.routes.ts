@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import { prisma } from '../lib/prisma'
 import { OtpService } from '../services/otp.service'
 import { BrevoService } from '../services/brevo.service'
-import { rateLimit } from '../middleware/auth.middleware'
+import { rateLimit, sessionBlacklist } from '../middleware/auth.middleware'
 import { Role } from '@prisma/client'
 
 const router = Router()
@@ -170,6 +170,16 @@ router.post('/login', rateLimit({
       maxAge: REFRESH_COOKIE_MAX_AGE
     })
 
+    // Clear session blacklist for this user ID on new login
+    sessionBlacklist.delete(user.id)
+
+    // Send email alert for administrative logins
+    if (user.role === Role.super_owner || user.role === Role.sub_admin) {
+      BrevoService.sendAdminLoginAlert(user.id, user.email).catch(err => {
+        console.error('Failed to send admin login alert email:', err)
+      })
+    }
+
     return res.json({
       accessToken,
       user: {
@@ -186,6 +196,28 @@ router.post('/login', rateLimit({
     console.error('Login Error:', error)
     return res.status(500).json({ error: 'Internal Server Error' })
   }
+})
+
+/**
+ * GET /api/auth/logout-session
+ * Terminate/invalidate an admin session via the email link
+ */
+router.get('/logout-session', async (req: Request, res: Response) => {
+  const userId = req.query.userId as string
+  if (!userId) {
+    return res.status(400).send('<h1>Error</h1><p>Missing user ID</p>')
+  }
+
+  // Blacklist the user session immediately
+  sessionBlacklist.add(userId)
+
+  return res.send(`
+    <div style="font-family: sans-serif; max-width: 500px; margin: 50px auto; padding: 30px; border: 1px solid #EAE3D5; border-radius: 12px; text-align: center; background-color: #FDFBF7;">
+      <h2 style="color: #FF5C4D;">Session Terminated</h2>
+      <p style="color: #20212B; line-height: 1.6;">The administrator session for this account has been successfully terminated and logged out.</p>
+      <p style="color: #767685; font-size: 14px;">Any ongoing actions using this session will be blocked immediately.</p>
+    </div>
+  `)
 })
 
 /**

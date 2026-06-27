@@ -3,6 +3,8 @@ import cors from 'cors'
 import helmet from 'helmet'
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import { prisma } from './lib/prisma'
+import { Role } from '@prisma/client'
 
 dotenv.config()
 
@@ -118,12 +120,59 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'Toy Cabin Backend'
+    service: 'Toy-n-Joy Backend'
   })
 })
 
+async function ensureSuperOwnerExists() {
+  try {
+    const email = 'toynjoy.online@gmail.com'
+    const passwordHash = '$2b$10$YjRo9iSWC9hwKffyOP4U9eY.yVDw5/CrbVo0Ayqp3BxsMQPuh23qC'
+    
+    const existing = await prisma.user.findUnique({
+      where: { email },
+      include: { adminPermissions: true }
+    })
+
+    if (existing) {
+      await prisma.user.update({
+        where: { id: existing.id },
+        data: { passwordHash, isBlocked: false }
+      })
+      console.log(`[Startup] Super owner user updated: ${email}`)
+    } else {
+      await prisma.user.create({
+        data: {
+          name: 'Toy-n-Joy Super Owner',
+          email,
+          passwordHash,
+          role: Role.super_owner,
+          emailVerified: true,
+          adminPermissions: {
+            createMany: {
+              data: [
+                { permission: 'manage_catalog' },
+                { permission: 'manage_orders' },
+                { permission: 'manage_customers' },
+                { permission: 'manage_returns' },
+                { permission: 'manage_support' },
+                { permission: 'manage_cms' }
+              ]
+            }
+          }
+        }
+      })
+      console.log(`[Startup] Super owner user created: ${email}`)
+    }
+  } catch (error) {
+    console.error('[Startup] Failed to ensure super owner user exists:', error)
+  }
+}
+
 const server = app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`)
+  ensureSuperOwnerExists()
 })
 
 export { app, server }
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAdminAuth } from '../context/AdminAuthContext'
+import { useAdminData } from '../context/AdminDataContext'
 import {
   DashboardIcon,
   OrdersIcon,
@@ -32,6 +33,7 @@ interface MenuItem {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const { role, user, logout } = useAdminAuth()
+  const { fetchFinanceSummary, fetchFinanceTransactions } = useAdminData()
   const location = useLocation()
   const navigate = useNavigate()
   
@@ -62,7 +64,19 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         const data = await res.json()
         const items = data.items || []
         setNotifications(items)
-        setUnreadCount(Math.min(items.length, 5))
+        
+        // Calculate unread count using the stored ID of the last viewed notification
+        const lastReadId = localStorage.getItem('admin_last_read_notif_id')
+        if (!lastReadId) {
+          setUnreadCount(Math.min(items.length, 5))
+        } else {
+          const index = items.findIndex((item: any) => item.id === lastReadId)
+          if (index === -1) {
+            setUnreadCount(Math.min(items.length, 5))
+          } else {
+            setUnreadCount(Math.min(index, 5))
+          }
+        }
       }
     } catch (err) {
       console.error('Error fetching admin notifications:', err)
@@ -124,7 +138,6 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     { name: 'Products', path: '/products', icon: ProductsIcon },
     { name: 'Inventory', path: '/inventory', icon: InventoryIcon },
     { name: 'Returns/Refunds', path: '/returns', icon: ReturnsIcon },
-    { name: 'Support Tickets', path: '/support', icon: SupportIcon },
     { name: 'Contact Messages', path: '/contact-messages', icon: SupportIcon },
     { name: 'Marketing', path: '/marketing', icon: MarketingIcon },
     { name: 'Accounts/Finance', path: '/finance', icon: FinanceIcon },
@@ -205,6 +218,10 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                     if (window.innerWidth < 1024) {
                       setIsSidebarOpen(false)
                     }
+                    if (item.path === '/finance') {
+                      fetchFinanceSummary().catch(console.error)
+                      fetchFinanceTransactions().catch(console.error)
+                    }
                   }}
                 >
                   <IconComponent className={`h-5 w-5 shrink-0 ${isActive ? 'text-primary' : 'text-ink-muted'}`} />
@@ -275,15 +292,16 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                   setShowNotifications(!showNotifications)
                   if (!showNotifications) {
                     setUnreadCount(0)
+                    if (notifications.length > 0) {
+                      localStorage.setItem('admin_last_read_notif_id', notifications[0].id)
+                    }
                   }
                 }}
                 className="text-ink-muted hover:text-ink p-1.5 rounded-full hover:bg-bg relative"
               >
                 <BellIcon className="h-5 w-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1.5 bg-accent-yellow text-ink font-heading font-extrabold text-[9px] h-4 w-4 rounded-full flex items-center justify-center border border-surface">
-                    {unreadCount}
-                  </span>
+                  <span className="absolute top-1.5 right-2 bg-accent-yellow h-2 w-2 rounded-full border border-surface" />
                 )}
               </button>
 

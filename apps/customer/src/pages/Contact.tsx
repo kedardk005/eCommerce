@@ -49,7 +49,7 @@ export const Contact: React.FC = () => {
       <div className="max-w-2xl space-y-3">
         <h1 className="text-4xl font-heading font-extrabold text-ink tracking-tight">Contact Our Workshop</h1>
         <p className="text-base text-ink-muted leading-relaxed font-body">
-          Have a question about our wood materials, order status, or looking for custom engraving? Drop us a line and our toy cabin hosts will get back to you shortly.
+          Have a question about our wood materials, order status, or looking for custom engraving? Drop us a line and our toy-n-joy hosts will get back to you shortly.
         </p>
       </div>
 
@@ -169,7 +169,10 @@ export const Contact: React.FC = () => {
               </a>
 
               {/* Email Option */}
-              <div className="flex items-center gap-4 p-3 bg-primary-hover/5 hover:bg-primary-hover/10 border border-primary/10 rounded-xl transition duration-150">
+              <a
+                href="mailto:toynjoy.online@gmail.com"
+                className="flex items-center gap-4 p-3 bg-primary-hover/5 hover:bg-primary-hover/10 border border-primary/10 rounded-xl transition duration-150 group"
+              >
                 <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shrink-0 shadow-xs">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -177,45 +180,15 @@ export const Contact: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-heading font-bold text-ink">Support Email</h3>
-                  <p className="text-xs text-ink-muted font-body leading-relaxed">support@toycabin.in</p>
+                  <h3 className="text-sm font-heading font-bold text-ink group-hover:text-primary transition-colors">Support Email</h3>
+                  <p className="text-xs text-ink-muted font-body leading-relaxed">toynjoy.online@gmail.com</p>
                 </div>
-              </div>
+              </a>
 
-              {/* Call Option */}
-              <div className="flex items-center gap-4 p-3 bg-secondary/5 hover:bg-secondary/10 border border-secondary/10 rounded-xl transition duration-150">
-                <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white shrink-0 shadow-xs">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-sm font-heading font-bold text-ink">Hotline</h3>
-                  <p className="text-xs text-ink-muted font-body leading-relaxed">1800-123-TOYS (Mon-Sat, 9AM-6PM)</p>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Styled Google Maps Placeholder Card */}
-          <div className="bg-white border border-border rounded-2xl p-4 shadow-2xs space-y-4">
-            <div className="relative aspect-[16/9] w-full bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl overflow-hidden flex flex-col items-center justify-center border border-border/60">
-              <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#20212b_1px,transparent_1px)] [background-size:16px_16px]"></div>
-              
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary animate-bounce">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </div>
-              <span className="text-xs font-heading font-bold text-ink mt-2">Toy Cabin Craft Workshop</span>
-              <span className="text-[10px] text-ink-muted font-body">Sector 62, Noida, UP, India</span>
-            </div>
-            
-            <div className="px-2 text-xs text-ink-muted font-body leading-relaxed">
-              <strong>Visit Us:</strong> Visitors are welcome to view our carving workshop by prior appointment.
-            </div>
-          </div>
+
 
         </div>
       </div>

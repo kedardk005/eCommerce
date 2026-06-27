@@ -328,7 +328,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setCouponDiscount(data.discountAmount)
     } catch (err: any) {
       setError(err.message)
-      alert(err.message)
       setActiveCouponState('')
       setCouponDiscount(0)
     } finally {

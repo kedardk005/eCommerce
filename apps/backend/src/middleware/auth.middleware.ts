@@ -11,6 +11,8 @@ export interface AuthenticatedRequest extends Request {
   }
 }
 
+export const sessionBlacklist = new Set<string>();
+
 /**
  * Require valid JWT access token in Authorization header
  */
@@ -25,6 +27,12 @@ export const requireAuth = (req: AuthenticatedRequest, res: Response, next: Next
 
   try {
     const decoded = jwt.verify(token, secret) as { id: string; role: Role }
+    
+    // Check if the user's current session has been blacklisted (logged out)
+    if (sessionBlacklist.has(decoded.id)) {
+      return res.status(401).json({ error: 'Authentication failed. Session terminated.' })
+    }
+
     req.user = {
       id: decoded.id,
       role: decoded.role

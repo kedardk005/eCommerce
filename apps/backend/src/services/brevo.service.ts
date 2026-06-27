@@ -12,8 +12,8 @@ export class BrevoService {
 
   private static getSender(): { email: string; name: string } {
     return {
-      email: process.env.BREVO_SENDER || 'no-reply@toycabin.com',
-      name: 'Toy Cabin'
+      email: process.env.BREVO_SENDER || 'no-reply@toynjoy.online',
+      name: 'Toy-n-Joy'
     }
   }
 
@@ -26,7 +26,7 @@ export class BrevoService {
     const apiKey = this.getApiKey()
     if (!apiKey) {
       console.warn('[BrevoService] Warning: BREVO_API_KEY is not defined. Logging OTP to console instead.')
-      console.log(`[BrevoService] SIMULATED EMAIL to <${to}>: Your Toy Cabin verification OTP code is [${otp}]`)
+      console.log(`[BrevoService] SIMULATED EMAIL to <${to}>: Your Toy-n-Joy verification OTP code is [${otp}]`)
       return true // Return true as simulation
     }
 
@@ -44,12 +44,12 @@ export class BrevoService {
         body: JSON.stringify({
           sender,
           to: [{ email: to }],
-          subject: 'Your Toy Cabin OTP Verification Code',
+          subject: 'Your Toy-n-Joy OTP Verification Code',
           htmlContent: `
             <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
               <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 32px;">🧸</span>
-                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
               </div>
               <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Verify Your Account</h3>
@@ -60,7 +60,7 @@ export class BrevoService {
                 <p style="font-size: 12px; line-height: 1.5; color: #767685;">If you did not make this request, you can safely ignore this email.</p>
               </div>
               <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-                <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
                 <p>Handcrafted wooden toys made from sustainable, organic materials.</p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export class BrevoService {
             <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
               <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 32px;">🧸</span>
-                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
               </div>
               <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">New Support Message</h3>
@@ -133,7 +133,7 @@ export class BrevoService {
                 <p style="font-size: 12px; line-height: 1.5; color: #767685;">To view the entire ticket thread or send a reply, please visit the Support area in your account dashboard.</p>
               </div>
               <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-                <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
               </div>
             </div>
           `
@@ -260,7 +260,7 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Order Placed Successfully!</h3>
@@ -277,7 +277,7 @@ export class BrevoService {
           <p style="font-size: 12px; line-height: 1.5; color: #767685;">We will send you another email as soon as the cabin team confirms your items.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -289,14 +289,14 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Your Order is Confirmed!</h3>
           <p style="font-size: 14px; line-height: 1.6; color: #767685;">Great news! The team has verified and confirmed your order <strong>#${order.id}</strong>. We are packing your organic wooden toys now.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -312,7 +312,7 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Your Order has Shipped!</h3>
@@ -325,15 +325,15 @@ export class BrevoService {
           </div>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
     // Trigger SMS/WhatsApp stubs
     if (order.user?.phone || order.phone) {
       const phone = order.user?.phone || order.phone
-      this.sendSmsNotification(userId, phone, `Your Toy Cabin order #${order.id} has been shipped via ${courier}. Track it here: ${trackingUrl}`).catch(() => {})
-      this.sendWhatsAppNotification(userId, phone, `Your Toy Cabin order #${order.id} has been shipped via ${courier}. Track it here: ${trackingUrl}`).catch(() => {})
+      this.sendSmsNotification(userId, phone, `Your Toy-n-Joy order #${order.id} has been shipped via ${courier}. Track it here: ${trackingUrl}`).catch(() => {})
+      this.sendWhatsAppNotification(userId, phone, `Your Toy-n-Joy order #${order.id} has been shipped via ${courier}. Track it here: ${trackingUrl}`).catch(() => {})
     }
 
     return this.sendEmail(userId, to, `Your Order #${order.id} has been Shipped!`, htmlContent)
@@ -344,7 +344,7 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Order Delivered!</h3>
@@ -352,15 +352,15 @@ export class BrevoService {
           <p style="font-size: 12px; line-height: 1.5; color: #767685; margin-top: 20px;">If you love our organic toys, please leave us a rating and review on the product shop page.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
     // Trigger SMS/WhatsApp stubs
     if (order.user?.phone || order.phone) {
       const phone = order.user?.phone || order.phone
-      this.sendSmsNotification(userId, phone, `Your Toy Cabin order #${order.id} has been delivered successfully!`).catch(() => {})
-      this.sendWhatsAppNotification(userId, phone, `Your Toy Cabin order #${order.id} has been delivered successfully!`).catch(() => {})
+      this.sendSmsNotification(userId, phone, `Your Toy-n-Joy order #${order.id} has been delivered successfully!`).catch(() => {})
+      this.sendWhatsAppNotification(userId, phone, `Your Toy-n-Joy order #${order.id} has been delivered successfully!`).catch(() => {})
     }
 
     return this.sendEmail(userId, to, `Your Order #${order.id} has been Delivered!`, htmlContent)
@@ -371,14 +371,14 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Order Cancelled</h3>
           <p style="font-size: 14px; line-height: 1.6; color: #767685;">Your order <strong>#${order.id}</strong> has been cancelled. Any pre-payments will be refunded back to your source account within 5-7 business days.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -392,7 +392,7 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Return Request Logged</h3>
@@ -403,7 +403,7 @@ export class BrevoService {
           </div>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -415,14 +415,14 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Return Request Approved!</h3>
           <p style="font-size: 14px; line-height: 1.6; color: #767685;">Good news! Your return request for order <strong>#${returnRequest.orderId}</strong> has been approved. We will schedule packaging pickup and issue your refund once restocked.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -434,7 +434,7 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Return Request Update: Rejected</h3>
@@ -444,7 +444,7 @@ export class BrevoService {
           </div>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -456,14 +456,14 @@ export class BrevoService {
       <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
         <div style="text-align: center; margin-bottom: 24px;">
           <span style="font-size: 32px;">🧸</span>
-          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+          <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
         </div>
         <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC;">
           <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Refund Processed!</h3>
           <p style="font-size: 14px; line-height: 1.6; color: #767685;">We have successfully processed your refund of <strong>$${(returnRequest.refundAmount / 100).toFixed(2)}</strong> for order <strong>#${returnRequest.orderId}</strong>. It should reflect in your source account within 5-7 business days.</p>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-          <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
         </div>
       </div>
     `
@@ -480,7 +480,7 @@ export class BrevoService {
 
     if (!apiKey || apiKey === 'dummy-brevo-api-key') {
       console.warn('[BrevoService] Warning: BREVO_API_KEY is dummy or not defined. Logging invite link to console.')
-      console.log(`[BrevoService] SIMULATED EMAIL to <${to}>: Invite to Toy Cabin Staff. Link: ${inviteLink}`)
+      console.log(`[BrevoService] SIMULATED EMAIL to <${to}>: Invite to Toy-n-Joy Staff. Link: ${inviteLink}`)
       return true
     }
 
@@ -498,23 +498,23 @@ export class BrevoService {
         body: JSON.stringify({
           sender,
           to: [{ email: to }],
-          subject: 'Welcome to Toy Cabin - Set Up Your Staff Account',
+          subject: 'Welcome to Toy-n-Joy - Set Up Your Staff Account',
           htmlContent: `
             <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
               <div style="text-align: center; margin-bottom: 24px;">
                 <span style="font-size: 32px;">🧸</span>
-                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy Cabin</h2>
+                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy</h2>
               </div>
               <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
                 <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Staff Invitation</h3>
-                <p style="font-size: 14px; line-height: 1.6; color: #767685;">You have been invited to join the Toy Cabin administration team as a staff member.</p>
+                <p style="font-size: 14px; line-height: 1.6; color: #767685;">You have been invited to join the Toy-n-Joy administration team as a staff member.</p>
                 <div style="text-align: center; margin: 32px 0;">
                   <a href="${inviteLink}" style="display: inline-block; background-color: #FF5C4D; color: #FFFFFF; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: bold; padding: 12px 24px; border-radius: 8px; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px;">Set Up Your Password</a>
                 </div>
                 <p style="font-size: 12px; line-height: 1.5; color: #767685;">This link will expire in 24 hours. If you did not expect this invitation, you can ignore this email.</p>
               </div>
               <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
-                <p>&copy; ${new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
               </div>
             </div>
           `
@@ -531,6 +531,78 @@ export class BrevoService {
       return true
     } catch (error) {
       console.error('[BrevoService] Error calling Brevo API for invite:', error)
+      return false
+    }
+  }
+
+  /**
+   * Send a security alert email when an admin logs in.
+   * @param userId The ID of the admin user who logged in.
+   * @param userEmail The email of the admin who logged in.
+   */
+  public static async sendAdminLoginAlert(userId: string, userEmail: string): Promise<boolean> {
+    const apiKey = this.getApiKey()
+    const alertEmail = 'toynjoy.online@gmail.com'
+    const adminUrl = process.env.ADMIN_APP_URL || 'http://localhost:5174'
+    const logoutLink = `${adminUrl}/api/auth/logout-session?userId=${userId}`
+
+    if (!apiKey) {
+      console.warn('[BrevoService] Warning: BREVO_API_KEY is not defined. Logging admin login alert to console.')
+      console.log(`[BrevoService] SIMULATED EMAIL to <${alertEmail}>: Admin logged in (${userEmail}). Invalidate link: ${logoutLink}`)
+      return true
+    }
+
+    const sender = this.getSender()
+    const url = 'https://api.brevo.com/v3/smtp/email'
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          sender,
+          to: [{ email: alertEmail }],
+          subject: '⚠️ SECURITY ALERT: Admin Logged In',
+          htmlContent: `
+            <div style="font-family: 'Plus Jakarta Sans', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #E7E4DC; border-radius: 14px; background-color: #F7F5F0; color: #20212B;">
+              <div style="text-align: center; margin-bottom: 24px;">
+                <span style="font-size: 32px;">⚠️</span>
+                <h2 style="font-family: 'Sora', sans-serif; color: #FF5C4D; margin: 8px 0 0 0;">Toy-n-Joy Security</h2>
+              </div>
+              <div style="background-color: #FFFFFF; padding: 32px; border-radius: 8px; border: 1px solid #E7E4DC; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <h3 style="font-family: 'Sora', sans-serif; margin-top: 0; color: #2F2F4A;">Admin Login Notification</h3>
+                <p style="font-size: 14px; line-height: 1.6; color: #767685;">An administrator account (${userEmail}) has successfully logged in to the admin panel.</p>
+                <div style="margin: 24px 0; padding: 16px; background-color: #FFF9EB; border-left: 4px solid #FFB01F; border-radius: 4px;">
+                  <p style="font-size: 13px; font-weight: bold; color: #FFB01F; margin: 0 0 8px 0;">Is this login genuine?</p>
+                  <p style="font-size: 12px; color: #767685; margin: 0;">If this was NOT you, please click the button below immediately to terminate the ongoing session and prevent unauthorized access.</p>
+                </div>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${logoutLink}" style="display: inline-block; font-family: 'Sora', sans-serif; font-weight: bold; font-size: 14px; color: #FFFFFF; background-color: #FF5C4D; padding: 12px 24px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 8px rgba(255,92,77,0.3);">Logout Session</a>
+                </div>
+                <p style="font-size: 11px; line-height: 1.5; color: #767685; font-style: italic;">Note: Clicking the button above will terminate the session immediately and block any further actions until a new, authentic login is established.</p>
+              </div>
+              <div style="text-align: center; margin-top: 24px; font-size: 11px; color: #767685;">
+                <p>&copy; ${new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
+              </div>
+            </div>
+          `
+        })
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`[BrevoService] Failed to send admin login alert. Status: ${response.status}. Error: ${errorText}`)
+        return false
+      }
+
+      console.log(`[BrevoService] Success: Admin login alert sent to ${alertEmail}`)
+      return true
+    } catch (error) {
+      console.error('[BrevoService] Error calling Brevo API for admin login alert:', error)
       return false
     }
   }

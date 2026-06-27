@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useOrders } from '../context/OrdersContext'
 import { useCart } from '../context/CartContext'
@@ -535,9 +536,9 @@ export const OrderDetail: React.FC = () => {
           </div>
         </div>
       </div>
-      {/* Return Request Modal */}
-      {isReturnModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/55 flex items-center justify-center p-4 backdrop-blur-xs select-none">
+      {/* Return Request Modal – rendered via portal so fixed sits on the real viewport */}
+      {isReturnModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/55 flex items-center justify-center p-4 backdrop-blur-xs select-none">
           <div className="bg-surface border border-border rounded-lg shadow-xl max-w-lg w-full overflow-hidden text-left flex flex-col max-h-[90vh]">
             <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-bg/25">
               <h3 className="font-heading font-extrabold text-lg text-ink">Request Return</h3>
@@ -643,7 +644,7 @@ export const OrderDetail: React.FC = () => {
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
     </PageContainer>
   )
 }

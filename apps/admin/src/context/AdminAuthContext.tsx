@@ -24,7 +24,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    // Load from localStorage for ease of developer manual reloads
+    // Load from localStorage to persist admin session on page reloads
     const savedLoggedIn = localStorage.getItem('admin_isLoggedIn') === 'true'
     const savedRole = localStorage.getItem('admin_role') as AdminRole | null
     const savedUserJson = localStorage.getItem('admin_user')
@@ -44,6 +44,35 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
     setLoading(false)
   }, [])
+
+  // Auto-logout after 15 minutes of inactivity
+  useEffect(() => {
+    if (!isLoggedIn) return
+
+    let timeoutId: any
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        logout()
+      }, 15 * 60 * 1000) // 15 minutes in milliseconds
+    }
+
+    // Monitor standard user interaction events to track activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart']
+    events.forEach(event => {
+      window.addEventListener(event, resetTimer)
+    })
+
+    resetTimer()
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+      events.forEach(event => {
+        window.removeEventListener(event, resetTimer)
+      })
+    }
+  }, [isLoggedIn])
 
   const login = (selectedRole: AdminRole, name: string, email: string) => {
     const newUser = { name, email }

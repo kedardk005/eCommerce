@@ -154,12 +154,12 @@ router.post('/orders/checkout', requireAuth, async (req: AuthenticatedRequest, r
       const userUsageCount = await prisma.couponUsage.count({
         where: { couponId: coupon.id, userId }
       })
-      if (userUsageCount >= coupon.usageLimit) {
-        return sendJson(400, { error: 'You have already used this coupon code the maximum allowed number of times.' })
+      if (userUsageCount >= 1) {
+        return sendJson(400, { error: 'You have already used this coupon code.' })
       }
       if (subtotal < coupon.minOrder) {
         return sendJson(400, {
-          error: `Minimum order value of $${(coupon.minOrder / 100).toFixed(2)} is required to apply this coupon.`
+          error: `Minimum order value of ₹${(coupon.minOrder / 100).toFixed(2)} is required to apply this coupon.`
         })
       }
 

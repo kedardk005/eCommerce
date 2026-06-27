@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAdminData } from '../context/AdminDataContext'
 
 export const Orders: React.FC = () => {
-  const { orders } = useAdminData()
+  const { orders, fetchOrders } = useAdminData()
   const navigate = useNavigate()
 
   // Filter states
@@ -65,7 +65,7 @@ export const Orders: React.FC = () => {
       case 'Packed':
         return 'bg-accent-blue/25 text-ink border border-accent-blue/40'
       case 'Shipped':
-        return 'bg-accent-blue/40 text-white border border-accent-blue'
+        return 'bg-accent-blue/40 text-ink border border-accent-blue/60'
       case 'Out for Delivery':
         return 'bg-accent-teal/10 text-accent-teal border border-accent-teal/20'
       case 'Delivered':
@@ -88,11 +88,25 @@ export const Orders: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Title Header */}
-      <div className="border-b border-border pb-3 text-left">
-        <h2 className="text-xl font-heading font-extrabold text-ink">Order Management</h2>
-        <p className="text-[11px] text-ink-muted leading-normal">
-          Track customer purchases, oversee dispatch pipelines, and process billing states.
-        </p>
+      <div className="border-b border-border pb-3 flex items-center justify-between">
+        <div className="text-left">
+          <h2 className="text-xl font-heading font-extrabold text-ink">Order Management</h2>
+          <p className="text-[11px] text-ink-muted leading-normal">
+            Track customer purchases, oversee dispatch pipelines, and process billing states.
+          </p>
+        </div>
+        <button
+          onClick={async () => {
+            try {
+              await fetchOrders();
+            } catch (err: any) {
+              console.error('Failed to refresh orders:', err);
+            }
+          }}
+          className="text-xs font-heading font-bold text-ink hover:text-primary flex items-center gap-1.5 px-3 py-1.5 border border-border rounded bg-surface hover:bg-bg transition-colors"
+        >
+          🔄 Refresh Orders
+        </button>
       </div>
 
       {/* Filter Control Console */}

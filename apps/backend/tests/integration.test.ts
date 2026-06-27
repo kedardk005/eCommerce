@@ -5,7 +5,7 @@ import { PrismaClient, OrderStatus, PaymentStatus, Role } from '@prisma/client'
 const prisma = new PrismaClient()
 const baseUrl = 'http://localhost:5001/api'
 
-describe('Toy Cabin Integration Tests', () => {
+describe('Toy-n-Joy Integration Tests', () => {
   // Test globals to pass data between test cases
   let customerToken = ''
   let adminToken = ''

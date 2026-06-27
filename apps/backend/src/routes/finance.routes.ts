@@ -28,7 +28,22 @@ router.get(
         where: { status: PaymentStatus.paid },
         _sum: { amount: true }
       })
-      const revenue = revenueAgg._sum.amount || 0
+      let revenue = revenueAgg._sum.amount || 0
+
+      // 1b. Fetch older legacy orders that do not have Payment records but are paid or delivered
+      const legacyOrdersAgg = await prisma.order.aggregate({
+        where: {
+          OR: [
+            { paymentStatus: PaymentStatus.paid },
+            { orderStatus: OrderStatus.delivered }
+          ],
+          payments: {
+            none: {}
+          }
+        },
+        _sum: { total: true }
+      })
+      revenue += (legacyOrdersAgg._sum.total || 0)
 
       // 2. Calculate refunds: Sum of Return records with RefundStatus.processed
       const refundsAgg = await prisma.return.aggregate({
@@ -136,6 +151,37 @@ router.get(
             type: 'payment',
             method: p.method,
             createdAt: p.createdAt
+          }))
+        )
+
+        // Fetch legacy orders without payment records
+        const legacyOrdersWhere: any = {
+          OR: [
+            { paymentStatus: PaymentStatus.paid },
+            { orderStatus: OrderStatus.delivered }
+          ],
+          payments: {
+            none: {}
+          }
+        }
+        if (hasDateFilter) {
+          legacyOrdersWhere.createdAt = dateFilter
+        }
+        const legacyOrders = await prisma.order.findMany({
+          where: legacyOrdersWhere,
+          include: {
+            user: { select: { name: true } }
+          }
+        })
+        rawTransactions.push(
+          ...legacyOrders.map(o => ({
+            id: `legacy-${o.id}`,
+            orderId: o.id,
+            customerName: o.user?.name || 'Customer',
+            amount: o.total / 100,
+            type: 'payment',
+            method: 'Legacy Order Fallback',
+            createdAt: o.createdAt
           }))
         )
       }

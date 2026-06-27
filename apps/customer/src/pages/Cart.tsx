@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import PageContainer from '../components/PageContainer'
 import EmptyState from '../components/EmptyState'
 
 export const Cart: React.FC = () => {
-  const { cartItems, updateQuantity, removeFromCart, activeCoupon, setActiveCoupon } = useCart()
+  const { cartItems, updateQuantity, removeFromCart, activeCoupon, setActiveCoupon, error: contextError } = useCart()
   const navigate = useNavigate()
 
   // Coupon state
@@ -26,25 +26,39 @@ export const Cart: React.FC = () => {
     return 50.0
   }, [subtotal])
 
+  // Custom webpage-level popup alerts state
+  const [showPopup, setShowPopup] = useState(false)
+  const [popupMessage, setPopupMessage] = useState('')
+
+  useEffect(() => {
+    if (contextError) {
+      setPopupMessage(contextError)
+      setShowPopup(true)
+      
+      const timer = setTimeout(() => {
+        setShowPopup(false)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [contextError])
+
   // Net total
   const total = useMemo(() => {
     return subtotal - discount + deliveryFee
   }, [subtotal, discount, deliveryFee])
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault()
     const cleanCode = couponCode.trim().toUpperCase()
 
-    if (cleanCode === 'WOOD10') {
-      setActiveCoupon(cleanCode)
-      setCouponError('')
-      setCouponCode('')
-    } else if (cleanCode === '') {
+    if (cleanCode === '') {
       setCouponError('Please enter a coupon code.')
-    } else {
-      setCouponError('Invalid coupon code. Try "WOOD10" for 10% off.')
-      setActiveCoupon('')
+      return
     }
+
+    setCouponError('')
+    await setActiveCoupon(cleanCode)
+    setCouponCode('')
   }
 
   const handleRemoveCoupon = () => {
@@ -198,7 +212,7 @@ export const Cart: React.FC = () => {
             <form onSubmit={handleApplyCoupon} className="flex gap-2">
               <input
                 type="text"
-                placeholder="e.g. WOOD10"
+                placeholder="e.g. WELCOME10"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 disabled={!!activeCoupon}
@@ -212,7 +226,7 @@ export const Cart: React.FC = () => {
                 Apply
               </button>
             </form>
-            {couponError && <p className="text-xs text-primary font-body font-semibold">{couponError}</p>}
+            {(couponError || contextError) && <p className="text-xs text-primary font-body font-semibold">{couponError || contextError}</p>}
             {activeCoupon && (
               <p className="text-xs text-accent-teal font-body font-semibold">
                 ✓ Coupon "{activeCoupon}" applied!
@@ -237,6 +251,24 @@ export const Cart: React.FC = () => {
           </button>
         </div>
       </div>
+      {/* Dynamic In-Webpage Popup Notification Modal */}
+      {showPopup && (
+        <div className="fixed bottom-6 right-6 z-50 animate-pop-in">
+          <div className="bg-white border-2 border-primary rounded-2xl shadow-playful p-5 max-w-sm flex items-start gap-3 relative bg-gradient-to-r from-white via-white to-primary/5">
+            <span className="text-2xl mt-0.5" role="img" aria-label="warning">⚠️</span>
+            <div className="space-y-1 text-left">
+              <p className="font-heading font-black text-sm text-primary">Coupon Alert</p>
+              <p className="font-body text-xs text-ink-muted leading-relaxed">{popupMessage}</p>
+            </div>
+            <button 
+              onClick={() => setShowPopup(false)} 
+              className="text-ink-muted hover:text-ink font-heading font-bold text-sm ml-2 p-1"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
     </PageContainer>
   )
 }

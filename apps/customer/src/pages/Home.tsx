@@ -171,44 +171,6 @@ const HeroSection: React.FC = () => {
 }
 
 
-// ─────────────────────────────────────────────────────────────────
-// AGE GROUP STRIP
-// ─────────────────────────────────────────────────────────────────
-const AgeGroupStrip: React.FC = () => {
-  const groups = [
-    { label: '0–2 yrs', emoji: '🍼', color: 'var(--color-age-0)',  query: '0-2'  },
-    { label: '3–5 yrs', emoji: '🧩', color: 'var(--color-age-3)',  query: '3-5'  },
-    { label: '6–8 yrs', emoji: '🚀', color: 'var(--color-age-6)',  query: '6-8'  },
-    { label: '9–12 yrs', emoji: '🔬', color: 'var(--color-age-9)', query: '9-12' },
-  ]
-  return (
-    <section className="w-full bg-surface/40 backdrop-blur-md border-y border-border relative z-10">
-      <div className="section-inner py-8">
-        <p className="font-heading font-black text-center text-ink mb-6 text-xl">
-          Shop by Age 🎂
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          {groups.map((g) => (
-            <a
-              key={g.query}
-              href={`/products?ageGroup=${g.query}`}
-              className="flex flex-col items-center gap-2 px-8 py-5 rounded-xl font-heading font-black
-                         hover:scale-105 active:scale-95 transition-transform duration-150 shadow-sm min-w-[110px]"
-              style={{ 
-                backgroundColor: g.color,
-                color: g.query === '0-2' ? 'var(--color-secondary)' : '#ffffff'
-              }}
-            >
-              <span className="text-3xl" role="img" aria-label={g.label}>{g.emoji}</span>
-              <span className="text-sm leading-tight text-center">{g.label}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 
 // ─────────────────────────────────────────────────────────────────
 // CATEGORY STRIP
@@ -944,7 +906,7 @@ export const Home: React.FC = () => {
       }
     } catch (err) {
       console.error('Failed to load home page data:', err)
-      setError('Could not establish connection to the toy cabin server. Please verify your network.')
+      setError('Could not establish connection to the toy-n-joy server. Please verify your network.')
     } finally {
       setLoading(false)
     }
@@ -988,7 +950,6 @@ export const Home: React.FC = () => {
           {/* ── 1. HERO — always shown, editorial 2-column layout ── */}
           <HeroSection />
 
-          <AgeGroupStrip />
 
           {/* ── 2. CATEGORY STRIP ── */}
           <CategoryStrip categories={categories} />
@@ -996,48 +957,6 @@ export const Home: React.FC = () => {
           {/* ── 3. SHOP BY AGE SECTION ── */}
           <ShopByAgeSection />
 
-          {/* ── 4. FEATURED COLLECTION SECTION (Newest arrivals) ── */}
-          {featuredProducts.length > 0 && (
-            <section className="w-full bg-transparent border-b border-border relative z-10" aria-label="Featured collection">
-              <div className="section-inner py-20 md:py-24 text-center space-y-12">
-                {/* Heading details */}
-                <div className="space-y-4">
-                  <span className="font-heading font-semibold text-[11px] tracking-[0.25em] uppercase text-ink-muted block">
-                    New Arrivals
-                  </span>
-                  <h2 className="font-heading font-bold text-ink" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.1 }}>
-                    Featured Collection
-                  </h2>
-                  <p className="font-body text-ink-muted text-sm sm:text-base max-w-xl mx-auto">
-                    Our freshest handcrafted wooden playthings, fresh out of the workshop.
-                  </p>
-                </div>
-
-                {/* Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-                  {featuredProducts.map((product) => (
-                    <EditorialProductCard key={product.id} product={product} badge="New" />
-                  ))}
-                </div>
-
-                {/* Bottom CTA */}
-                <div className="pt-4">
-                  <Link
-                    to="/products"
-                    id="featured-view-all-btn"
-                    className="inline-flex items-center gap-2 font-heading font-bold text-sm text-white rounded-full px-7 py-3.5 transition-all duration-200 hover:opacity-90"
-                    style={{ backgroundColor: 'var(--color-primary)', boxShadow: '0 2px 10px rgba(255,92,77,0.3)' }}
-                  >
-                    View All Products
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </section>
-          )}
 
           {/* ── 5. BESTSELLERS SECTION ── */}
           {bestsellerProducts.length > 0 && (
@@ -1085,9 +1004,9 @@ export const Home: React.FC = () => {
                 Organic &amp; Child-Safe Play
               </h2>
               <p className="font-body text-white/80 text-sm sm:text-base max-w-lg mx-auto">
-                Get an extra <strong className="text-white">20% off</strong> your first order. Use{' '}
+                Get <strong className="text-white">10% off</strong> on orders above ₹500. Use{' '}
                 <code className="bg-white/15 px-2 py-0.5 rounded font-heading text-xs text-white tracking-wider">
-                  WOODTOY20
+                  DIWALI10
                 </code>{' '}
                 at checkout.
               </p>

@@ -7,8 +7,8 @@ export const Login: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [email, setEmail] = useState('admin@toycabin.com')
-  const [password, setPassword] = useState('password123')
+  const [email, setEmail] = useState('toynjoy.online@gmail.com')
+  const [password, setPassword] = useState('toynjoy@#')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   // Get destination path from state (if redirected by RequireRole)
@@ -68,7 +68,7 @@ export const Login: React.FC = () => {
         <div className="bg-secondary py-6 px-8 text-center border-b border-border">
           <div className="text-3xl mb-1 select-none">🪵</div>
           <h1 className="font-heading font-extrabold text-xl text-white tracking-wide">
-            Toy Cabin Control Center
+            Toy-n-Joy Control Center
           </h1>
           <p className="text-[10px] font-heading font-bold text-accent-yellow/80 uppercase tracking-widest mt-1">
             Administrative Console

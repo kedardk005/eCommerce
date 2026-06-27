@@ -46,7 +46,7 @@ export const Signup: React.FC = () => {
   return (
     <AuthLayout
       title="Create Account"
-      subtitle="Join the Toy Cabin family to start building your collection."
+      subtitle="Join the Toy-n-Joy family to start building your collection."
     >
       <form onSubmit={handleSubmit} className="space-y-4 text-left">
         {errorMsg && (

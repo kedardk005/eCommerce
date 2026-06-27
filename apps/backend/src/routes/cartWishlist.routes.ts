@@ -322,8 +322,8 @@ router.post('/cart/apply-coupon', requireAuth, async (req: AuthenticatedRequest,
     })
 
     // If usageLimit applies as a cap per user
-    if (userUsageCount >= coupon.usageLimit) {
-      return res.status(400).json({ error: 'You have already used this coupon code the maximum allowed number of times.' })
+    if (userUsageCount >= 1) {
+      return res.status(400).json({ error: 'You have already used this coupon code.' })
     }
 
     const cart = await getFullCart(req.user!.id)
@@ -339,7 +339,7 @@ router.post('/cart/apply-coupon', requireAuth, async (req: AuthenticatedRequest,
 
     if (subtotal < coupon.minOrder) {
       return res.status(400).json({
-        error: `Minimum order value of $${(coupon.minOrder / 100).toFixed(2)} is required to apply this coupon. Current subtotal: $${(subtotal / 100).toFixed(2)}`
+        error: `Minimum order value of ₹${(coupon.minOrder / 100).toFixed(2)} is required to apply this coupon. Current subtotal: ₹${(subtotal / 100).toFixed(2)}`
       })
     }
 

@@ -539,8 +539,8 @@ model Notification {
 
 model Settings {
   id                String   @id @default("global")
-  storeName         String   @default("Toy Cabin")
-  supportContact    String   @default("support@toycabin.com")
+  storeName         String   @default("Toy-n-Joy")
+  supportContact    String   @default("support@toynjoy.online")
   currency          String   @default("INR")
   lowStockThreshold Int      @default(10)
   codToggle         Boolean  @default(true)

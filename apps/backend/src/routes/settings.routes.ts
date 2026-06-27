@@ -25,8 +25,8 @@ async function getOrCreateSettings() {
     settings = await prisma.settings.create({
       data: {
         id: 'global',
-        storeName: 'Toy Cabin',
-        supportContact: 'support@toycabin.com',
+        storeName: 'Toy-n-Joy',
+        supportContact: 'support@toynjoy.online',
         currency: 'INR',
         lowStockThreshold: 10,
         codToggle: true,

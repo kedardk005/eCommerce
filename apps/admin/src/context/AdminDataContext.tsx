@@ -197,7 +197,9 @@ interface AdminDataContextType {
   categories: string[]
   brands: string[]
   orders: AdminOrder[]
+  fetchOrders: () => Promise<void>
   returns: AdminReturnRequest[]
+  fetchReturns: () => Promise<void>
   activityLogs: ActivityLogEntry[]
   activityLogsLoading: boolean
   activityLogsError: string | null
@@ -1643,7 +1645,9 @@ export const AdminDataProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         retryShipment,
         fetchTickets,
         replyToTicket,
-        updateTicketStatus
+        updateTicketStatus,
+        fetchOrders,
+        fetchReturns
       }}
     >
       {children}

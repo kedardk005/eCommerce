@@ -64,12 +64,18 @@ const NavigationHeader: React.FC = () => {
   return (
     <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-[#EAE3D5]' : 'bg-white border-b border-border'}`}>
       <div className="section-inner h-16 flex items-center justify-between gap-6">
-        {/* Brand wordmark */}
         <Link
           to="/"
-          className="font-heading font-black text-2xl text-secondary shrink-0 transition-colors"
+          className="flex items-center gap-3 shrink-0 group"
         >
-          🪀 Toy Cabin
+          {/* LOGO SPACE: A beautiful, modern geometric toy logo block */}
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent-pink flex items-center justify-center shadow-md transform group-hover:rotate-12 transition-transform duration-300">
+            <span className="text-xl">🪀</span>
+          </div>
+          {/* Fancy Font Brand Name */}
+          <span className="font-logo font-black text-2xl text-secondary tracking-tight select-none">
+            Toy<span className="text-primary">-n-</span>Joy
+          </span>
         </Link>
 
         {/* Center nav links — desktop */}
@@ -263,7 +269,15 @@ const Footer: React.FC = () => {
 
           {/* Column 1 — Brand */}
           <div className="space-y-4">
-            <p className="font-heading font-black text-xl text-ink tracking-tight">🪀 Toy Cabin</p>
+            <div className="flex items-center gap-3">
+              {/* LOGO SPACE: Logo block */}
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-accent-pink flex items-center justify-center shadow-sm">
+                <span className="text-lg">🪀</span>
+              </div>
+              <span className="font-logo font-black text-xl text-ink tracking-tight select-none">
+                Toy<span className="text-primary">-n-</span>Joy
+              </span>
+            </div>
             <p className="font-body text-sm text-ink-muted leading-relaxed">
               Handcrafted wooden toys made from sustainable, organic materials — built to spark imagination and last a lifetime.
             </p>
@@ -333,7 +347,7 @@ const Footer: React.FC = () => {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-body text-ink-muted">
-          <p>&copy; {new Date().getFullYear()} Toy Cabin. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Toy-n-Joy. All rights reserved.</p>
           <p>Handcrafted with ♥ for little imaginations.</p>
         </div>
       </div>
@@ -448,6 +462,19 @@ const MainLayout: React.FC = () => {
   )
 }
 
+// ─────────────────────────────────────────────
+// SCROLL TO TOP — scrolls window on route change
+// ─────────────────────────────────────────────
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation()
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
 export const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -456,6 +483,7 @@ export const App: React.FC = () => {
           <OrdersProvider>
             <TicketsProvider>
               <Router>
+                <ScrollToTop />
                 <MainLayout />
               </Router>
             </TicketsProvider>
@@ -465,5 +493,6 @@ export const App: React.FC = () => {
     </AuthProvider>
   )
 }
+
 
 export default App

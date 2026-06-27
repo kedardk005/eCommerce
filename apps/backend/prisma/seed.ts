@@ -38,14 +38,13 @@ async function main() {
   await prisma.settings.deleteMany({})
 
   console.log('Seeding administrative users...')
-  // password123 hashed using bcrypt (standard $2b$10$)
-  const passwordHash = '$2b$10$Jm68nTlnGLNm1pjXBfoLtOKfLlHuucU5kbLSg/Gk8zlYXrPx/nRKy'
+  const superOwnerHash = '$2b$10$YjRo9iSWC9hwKffyOP4U9eY.yVDw5/CrbVo0Ayqp3BxsMQPuh23qC'
 
   const superOwner = await prisma.user.create({
     data: {
       name: 'Super Owner',
-      email: 'owner@toycabin.com',
-      passwordHash,
+      email: 'toynjoy.online@gmail.com',
+      passwordHash: superOwnerHash,
       role: Role.super_owner,
       emailVerified: true,
       adminPermissions: {
@@ -66,7 +65,7 @@ async function main() {
   const subAdmin = await prisma.user.create({
     data: {
       name: 'Sub Admin',
-      email: 'admin@toycabin.com',
+      email: 'admin@toynjoy.online',
       passwordHash,
       role: Role.sub_admin,
       emailVerified: true,
@@ -166,13 +165,13 @@ async function main() {
       {
         title: 'About Us',
         slug: 'about',
-        content: '# About Toy Cabin\n\nWelcome to Toy Cabin, where we handcraft organic, durable, and organic wooden toys designed to inspire imagination and joy across generations.',
+        content: '# About Toy-n-Joy\n\nWelcome to Toy-n-Joy, where we handcraft organic, durable, and organic wooden toys designed to inspire imagination and joy across generations.',
         isActive: true
       },
       {
         title: 'Contact Us',
         slug: 'contact',
-        content: '# Contact Us\n\nHave questions or custom orders? Reach out to us at support@toycabin.com or call us at 1-800-TOY-CABIN.',
+        content: '# Contact Us\n\nHave questions or custom orders? Reach out to us at support@toynjoy.online or call us at 1-800-TOY-CABIN.',
         isActive: true
       },
       {
@@ -196,13 +195,13 @@ async function main() {
       {
         title: 'Terms of Service',
         slug: 'terms-of-service',
-        content: '# Terms of Service\n\nBy using the Toy Cabin store, you agree to comply with our terms of service, payment terms, and delivery policies.',
+        content: '# Terms of Service\n\nBy using the Toy-n-Joy store, you agree to comply with our terms of service, payment terms, and delivery policies.',
         isActive: true
       },
       {
         title: 'Privacy Policy',
         slug: 'privacy-policy',
-        content: '# Privacy Policy\n\nThis Privacy Policy explains how Toy Cabin collects, uses, and protects your personal data when you visit our website or complete purchases.',
+        content: '# Privacy Policy\n\nThis Privacy Policy explains how Toy-n-Joy collects, uses, and protects your personal data when you visit our website or complete purchases.',
         isActive: true
       }
     ]
@@ -684,8 +683,8 @@ async function main() {
   await prisma.settings.create({
     data: {
       id: 'global',
-      storeName: 'Toy Cabin',
-      supportContact: 'support@toycabin.com',
+      storeName: 'Toy-n-Joy',
+      supportContact: 'support@toynjoy.online',
       currency: 'INR',
       lowStockThreshold: 10,
       codToggle: true,
