@@ -87,7 +87,7 @@ export const Help: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 select-none">
           <a
-            href="https://wa.me/1234567890"
+            href="https://wa.me/917041777659?text=Hello%20Toy%20n%20Joy,%20I%20have%20an%20inquiry%20regarding%20wooden%20toys."
             target="_blank"
             rel="noopener noreferrer"
             className="p-4 border border-border rounded-xl bg-accent-teal/5 hover:bg-accent-teal/10 border-b-[2px] border-b-accent-teal/30 transition flex items-center space-x-3 active:translate-y-[1px]"

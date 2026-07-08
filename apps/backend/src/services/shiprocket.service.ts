@@ -59,6 +59,11 @@ export class ShiprocketService {
     const [firstName, ...lastNameParts] = (order.user?.name || 'Customer').split(' ')
     const lastName = lastNameParts.join(' ') || 'Customer'
 
+    // Combine line1 and line2 to ensure the address is at least 10 characters long as required by Shiprocket API
+    const fullAddress = `${address.line1 || ''} ${address.line2 || ''}`.trim()
+    const billingAddress = fullAddress.length >= 10 ? fullAddress : `${fullAddress}, ${address.city || ''}, ${address.state || ''}`.trim()
+    const finalBillingAddress = billingAddress.length >= 10 ? billingAddress : billingAddress.padEnd(10, '.')
+
     const orderItems = order.items.map((item: any) => ({
       name: item.titleSnapshot,
       sku: item.productVariant?.sku || `SKU-MOCK-${item.id}`,
@@ -75,7 +80,7 @@ export class ShiprocketService {
       pickup_location: 'Primary',
       billing_customer_name: firstName || 'Customer',
       billing_last_name: lastName || 'Customer',
-      billing_address: address.line1,
+      billing_address: finalBillingAddress,
       billing_address_2: address.line2 || '',
       billing_city: address.city,
       billing_pincode: address.pincode,

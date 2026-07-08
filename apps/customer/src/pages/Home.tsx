@@ -649,32 +649,32 @@ const InteractiveBackground: React.FC = () => {
   const elements = [
     // Hero height (0% - 35%)
     { id: '1', emoji: '🪀', top: '8%', left: '5%', size: '90px', opacity: 0.45, rotate: 0 },
-    { id: '2', emoji: '🧸', top: '15%', left: '85%', size: '75px', opacity: 0.5, rotate: 15 },
-    { id: '3', emoji: '🚀', top: '26%', left: '12%', size: '70px', opacity: 0.45, rotate: -25 },
+    { id: '2', emoji: '🐘', top: '15%', left: '85%', size: '75px', opacity: 0.5, rotate: 15 },
+    { id: '3', emoji: '🚂', top: '26%', left: '12%', size: '70px', opacity: 0.45, rotate: -25 },
     { id: '4', emoji: '🌈', top: '5%', left: '45%', size: '95px', opacity: 0.45, rotate: 0 },
-    { id: '5', emoji: '🏎️', top: '22%', left: '72%', size: '70px', opacity: 0.45, rotate: 10 },
-    { id: '6', emoji: '🎲', top: '28%', left: '42%', size: '65px', opacity: 0.5, rotate: 15 },
+    { id: '5', emoji: '🚗', top: '22%', left: '72%', size: '70px', opacity: 0.45, rotate: 10 },
+    { id: '6', emoji: '⭐', top: '28%', left: '42%', size: '65px', opacity: 0.5, rotate: 15 },
 
     // Category / Age height (35% - 60%)
-    { id: '7', emoji: '🧩', top: '35%', left: '8%', size: '80px', opacity: 0.45, rotate: 20 },
-    { id: '8', emoji: '🎠', top: '48%', left: '45%', size: '65px', opacity: 0.45, rotate: 0 },
-    { id: '9', emoji: '🪁', top: '42%', left: '82%', size: '75px', opacity: 0.45, rotate: -20 },
-    { id: '10', emoji: '🎨', top: '52%', left: '18%', size: '75px', opacity: 0.5, rotate: 45 },
+    { id: '7', emoji: '📐', top: '35%', left: '8%', size: '80px', opacity: 0.45, rotate: 20 },
+    { id: '8', emoji: '🐎', top: '48%', left: '45%', size: '65px', opacity: 0.45, rotate: 0 },
+    { id: '9', emoji: '🪀', top: '42%', left: '82%', size: '75px', opacity: 0.45, rotate: -20 },
+    { id: '10', emoji: '🌲', top: '52%', left: '18%', size: '75px', opacity: 0.5, rotate: 45 },
     { id: '11', emoji: '🚗', top: '50%', left: '78%', size: '70px', opacity: 0.45, rotate: -12 },
 
     // Featured / Bestsellers height (60% - 80%)
     { id: '12', emoji: '🧱', top: '65%', left: '85%', size: '90px', opacity: 0.4, rotate: 10 },
     { id: '13', emoji: '🚂', top: '72%', left: '8%', size: '75px', opacity: 0.45, rotate: -5 },
     { id: '14', emoji: '⛵', top: '78%', left: '72%', size: '70px', opacity: 0.5, rotate: 12 },
-    { id: '15', emoji: '🚁', top: '62%', left: '55%', size: '80px', opacity: 0.45, rotate: 15 },
+    { id: '15', emoji: '🐘', top: '62%', left: '55%', size: '80px', opacity: 0.45, rotate: 15 },
     { id: '16', emoji: '🐎', top: '68%', left: '25%', size: '75px', opacity: 0.45, rotate: 10 },
 
     // Bottom (80% - 100%)
     { id: '17', emoji: '🌲', top: '85%', left: '10%', size: '100px', opacity: 0.4, rotate: 0 },
-    { id: '18', emoji: '🎁', top: '92%', left: '28%', size: '75px', opacity: 0.45, rotate: 0 },
+    { id: '18', emoji: '🧱', top: '92%', left: '28%', size: '75px', opacity: 0.45, rotate: 0 },
     { id: '19', emoji: '🌟', top: '88%', left: '65%', size: '70px', opacity: 0.6, rotate: 0 },
     { id: '20', emoji: '🥁', top: '94%', left: '82%', size: '75px', opacity: 0.45, rotate: -10 },
-    { id: '21', emoji: '🎪', top: '82%', left: '45%', size: '80px', opacity: 0.45, rotate: 0 }
+    { id: '21', emoji: '🪵', top: '82%', left: '45%', size: '80px', opacity: 0.45, rotate: 0 }
   ]
 
   const containerRef = useRef<HTMLDivElement>(null)

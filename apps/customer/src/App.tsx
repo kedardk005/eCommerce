@@ -68,10 +68,12 @@ const NavigationHeader: React.FC = () => {
           to="/"
           className="flex items-center gap-3 shrink-0 group"
         >
-          {/* LOGO SPACE: A beautiful, modern geometric toy logo block */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent-pink flex items-center justify-center shadow-md transform group-hover:rotate-12 transition-transform duration-300">
-            <span className="text-xl">🪀</span>
-          </div>
+          {/* LOGO SPACE: A beautiful round brand logo */}
+          <img
+            src="/logo.png"
+            alt="Toy'n'Joy Logo"
+            className="w-10 h-10 object-contain rounded-full shadow-md transform group-hover:rotate-12 transition-transform duration-300"
+          />
           {/* Fancy Font Brand Name */}
           <span className="font-logo font-black text-2xl text-secondary tracking-tight select-none">
             Toy<span className="text-primary">-n-</span>Joy
@@ -271,9 +273,11 @@ const Footer: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               {/* LOGO SPACE: Logo block */}
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-accent-pink flex items-center justify-center shadow-sm">
-                <span className="text-lg">🪀</span>
-              </div>
+              <img
+                src="/logo.png"
+                alt="Toy'n'Joy Logo"
+                className="w-9 h-9 object-contain rounded-full shadow-xs"
+              />
               <span className="font-logo font-black text-xl text-ink tracking-tight select-none">
                 Toy<span className="text-primary">-n-</span>Joy
               </span>
@@ -313,7 +317,7 @@ const Footer: React.FC = () => {
             <p className="font-heading font-black text-xs uppercase tracking-widest text-ink-muted">Connect</p>
             <div className="flex items-center gap-4">
               {/* Instagram placeholder */}
-              <a href="#" aria-label="Instagram" className="text-ink-muted hover:text-ink transition-colors">
+              <a href="https://www.instagram.com/toy_n_joy1?igsh=cnVnOHduN2prbDY0&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-ink-muted hover:text-ink transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -321,7 +325,7 @@ const Footer: React.FC = () => {
                 </svg>
               </a>
               {/* Facebook placeholder */}
-              <a href="#" aria-label="Facebook" className="text-ink-muted hover:text-ink transition-colors">
+              <a href="https://www.facebook.com/share/1CqPNRfp9Z/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-ink-muted hover:text-ink transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                 </svg>
